@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\main-frame",
+    "\\src\\app\\main-screen",
+    "\\src\\app\\media-player",
+    "\\src\\app\\services",
+    "\\src\\app\\shared",
+    "\\src\\assets"
+  ],
+  "SelectedNode": "\\src\\assets\\settings.json",
+  "PreviewInSolutionExplorer": false
+}

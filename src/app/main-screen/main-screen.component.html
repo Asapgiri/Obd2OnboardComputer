@@ -1,0 +1,43 @@
+<div class="screen-container">
+    <div id="obd2-data" class="container-inner">
+        <table id="obd2-table">
+        <tr>
+                <th colspan="2">
+                    Alap adatok:
+                </th>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Sebesség:</td>
+                <td class="obd-table-value">{{obd2Service.data.speed}} Km/h</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Fordulatszám:</td>
+                <td class="obd-table-value">{{obd2Service.data.rev}} f.</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Fokozat:</td>
+                <td class="obd-table-value">{{obd2Service.data.gear != 0 ? obd2Service.data.gear != -1 ? obd2Service.data.gear : 'R' : 'N'}}</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Üzemanyag:</td>
+                <td class="obd-table-value">{{obd2Service.data.fuelCons.long}} l/100km<br />{{obd2Service.data.fuelCons.short}} l/Km</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Megtett út:</td>
+                <td class="obd-table-value">{{obd2Service.data.travelled}} Km</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Vezetési stílus:</td>
+                <td class="obd-table-value">{{obd2Service.data.drivingStyle ? obd2Service.data.drivingStyle : '-'}}</td>
+            </tr>
+            <tr>
+                <td class="obd-table-spec">Vezetési idő:</td>
+                <td class="obd-table-value">{{obd2Service.data.drivingTime}} perc</td>
+            <tr>
+        </table>
+    </div>
+    <div id="map-container" class="container-inner">
+        <div id="map"></div>
+    </div>
+</div>
+

@@ -1,0 +1,1 @@
+electron-packager.cmd . --platform=linux --arch=armv7l --out=../bin --overwrite

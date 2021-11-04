@@ -1,0 +1,8 @@
+<div class="appsContainer">
+    <a href="#" *ngFor="let appWidget of appWidgets" class="appWidget"
+    [ngStyle]="{'background': appWidget.img ? 'url(' + appWidget.img + ')' : '', 'background-color': appWidget.color.bg, 'border-color': appWidget.color.border, 'color': appWidget.color.text, 'background-size': '100% 100%', 'background-repeat': 'no-repeat'}"
+    [routerLink]="appWidget.location">
+    <div class="bg-opacity"></div>
+        <span class="appName">{{appWidget.name}}</span>
+    </a>
+</div>

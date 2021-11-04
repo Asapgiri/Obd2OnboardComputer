@@ -1,1 +1,66 @@
 /* You can add global styles to this file, and also import other style files */
+html, body, app-root {
+  position: absolute;
+  background: url('assets/gradient-green-linear-black-dark-green-gradient.jpg');
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: 110%;
+  height: 100%;
+  width: 100%;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  z-index: -20;
+}
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.screen-container {
+    background-color: transparent;
+    height: calc(100% - 110px);
+    width: 100%;
+    position: absolute;
+    font-size: 16px;
+}
+
+.container-inner {
+    height: 100%;
+    float: left;
+    margin: 0px;
+    padding: 2% 3%;
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, .2) !important;
+}
+
+.huge-link {
+  width: 100%;
+  text-align: center;
+  transition: 0.3s;
+  margin: 0px;
+  padding: 12px;
+}
+
+.huge-link:hover {
+  opacity: 0.6
+}
+
+.huge-link:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.link-spacer {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0px;
+}
+

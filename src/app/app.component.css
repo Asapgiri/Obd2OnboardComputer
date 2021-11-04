@@ -1,0 +1,32 @@
+app-main-screen {
+    max-height: 100%;
+}
+
+.bg-transparent {
+    background-color: transparent !important;
+}
+
+.huge-link {
+    width: 100%;
+    text-align: center;
+    transition: 0.3s;
+    margin: 0px;
+    padding: 12px;
+}
+.huge-link:hover {
+    opacity: 0.6
+}
+.huge-link:active {
+    background-color: #3e8e41;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.link-spacer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px;
+}

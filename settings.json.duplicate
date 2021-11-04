@@ -1,0 +1,54 @@
+{
+  "map": {
+    "minZoom": 15,
+    "maxZoom": 18,
+    "defaultZoom":  15,
+    "lastCoordinates": {
+      "lng": 18.8821291923523,
+      "lat": 47.7808951240949
+    }
+  },
+  "temp": {
+    "refreshInterval": 30000,
+    "precision": 1
+  },
+  "time": {
+    "refreshInterval": 1000
+  },
+  "mp": {
+    "fileDir": "dist/OBD2OnboardComputer/browser/assets/music/",
+    "wave": {
+      "type": "shockwave",
+      "usable_types": [ "shockwave", "static", "wave", "bars", "dualbars", "cubes", "bars blocks", "orbs" ],
+      "stroke": 2,
+      "colors": [ "#ac00e6", "skyblue", "#ff4d4d" ]
+    },
+    "deviceId": "02d4710df39355943bc9a1e960ee948dd06b8bc9402473ddd7c94f6327ca84a5",
+    "player": {
+      "lastPlayed": {
+        "src": "",
+        "name": "",
+        "time": 0
+      },
+      "lastPlaylist": []
+    }
+  },
+  "api": {
+    "url": "http://localhost:3000/api",
+    "mp": "mp",
+    "obd": "obd",
+    "temp": "temp",
+    "gps": "gps"
+  },
+  "obd": {
+    "refreshInterval": 1000,
+    "useMetricSystem": true,
+    "precision": 2,
+    "isConnected": true,
+    "port": "/dev/ttyUSB0",
+    "pollers": [ "vss", "rpm", "temp", "maf" ],
+    "options": {
+      "baudRate": 38400
+    }
+  }
+}
