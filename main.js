@@ -20,7 +20,7 @@ function createWindow() {
         contextIsolation: false
       },
       autoHideMenuBar: true,
-      //fullscreen: true
+      fullscreen: process.platform != 'win32'
     })
 
     // and load the index.html of the app.

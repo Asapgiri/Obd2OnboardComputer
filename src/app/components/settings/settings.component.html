@@ -1,0 +1,18 @@
+<app-header [buttonRoute]="['']"></app-header>
+
+<h1>Beállítások</h1>
+<hr />
+<div>
+  <div *ngFor="let group of settings">
+    <hr />
+    <h2>{{ group.title }}</h2>
+    <div *ngFor="let setting of group.settings">
+      <span>{{ setting.title }}:</span>
+      {{ setting.type }}
+      {{ setting.value }}
+      <span *ngFor="let opt in setting.options">{{ opt }}</span>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http'
 import { GlobalSettings } from '../shared/global-settings'
 import * as fs from 'fs'
 import path from 'path'
-import { OBDCollector } from './obd2-service'
 
 
 @Injectable()
@@ -19,6 +18,7 @@ export class GlobalsService {
   private travelled = 0
   private fs: typeof fs
   private path: typeof path
+  private spawn
   private appPath: string
 
   constructor(private electronService: ElectronService, private http: HttpClient) {
@@ -34,6 +34,7 @@ export class GlobalsService {
     this.path = window.require('path')
     this.globalSettings = this.loadSettings()
     this.obd = window.require('obd2-over-serial')
+    this.spawn = window.require('child_process').spawn
     this.initOBDReader()
     //console.log(BrowserWindow)
 
@@ -122,7 +123,7 @@ export class GlobalsService {
   }
 
   private initOBDReader() {
-    this.obd = new this.obd(this.globalSettings.obd.port, this.globalSettings.obd.options)
+    /*this.obd = new this.obd(this.globalSettings.obd.port, this.globalSettings.obd.options)
 
     const self = this
 
@@ -142,8 +143,19 @@ export class GlobalsService {
         console.log(err)
         this.obd = null
       }
-    }, 1000)
-    
+    }, 1000)*/
+
+    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
+    this.obd.stdout.setEncoding('utf8')
+    this.obd.stderr.setEncoding('utf8')
+    this.obd.stdout.on('data', (data: any) => {
+      console.log(data)
+    })
+    this.obd.stderr.on('data', (data: any) => {
+      console.log(data)
+    })
+
+
   }
 
 }

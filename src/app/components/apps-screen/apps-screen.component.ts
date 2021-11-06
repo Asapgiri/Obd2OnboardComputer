@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { WidgetService } from '../services/widget-service';
-import { AppWidget } from '../shared/app-widget';
+import { WidgetService } from '../../services/widget-service';
+import { AppWidget } from '../../shared/app-widget';
 
 @Component({
   selector: 'app-apps-screen',

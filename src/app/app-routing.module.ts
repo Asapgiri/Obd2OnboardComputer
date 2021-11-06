@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MainFrameComponent } from './main-frame/main-frame.component';
-import { MediaPlayerComponent } from './media-player/media-player.component';
+import { MainFrameComponent } from './components/main-frame/main-frame.component';
+import { MediaPlayerComponent } from './components/media-player/media-player.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 const routes: Routes = [
   { path: '', component: MainFrameComponent },
-  { path: 'mp', component: MediaPlayerComponent }
+  { path: 'mp', component: MediaPlayerComponent },
+  { path: 'settings', component: SettingsComponent }
 ]
 
 /*function(): Routes {

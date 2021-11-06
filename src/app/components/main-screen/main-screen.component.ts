@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { GlobalsService } from '../services/globals-service';
-import { MapService } from '../services/map-service';
-import { Obd2Service } from '../services/obd2-service';
-import { OBD2Data } from '../shared/obd2-data';
+import { GlobalsService } from '../../services/globals-service';
+import { MapService } from '../../services/map-service';
+import { Obd2Service } from '../../services/obd2-service';
 
 @Component({
   selector: 'app-main-screen',

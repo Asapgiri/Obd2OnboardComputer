@@ -3,13 +3,13 @@
     "",
     "\\src",
     "\\src\\app",
-    "\\src\\app\\main-frame",
-    "\\src\\app\\main-screen",
-    "\\src\\app\\media-player",
+    "\\src\\app\\components",
     "\\src\\app\\services",
+    "\\src\\app\\services\\ifnteraces",
     "\\src\\app\\shared",
-    "\\src\\assets"
+    "\\src\\app\\shared\\enums",
+    "\\src\\app\\shared\\types"
   ],
-  "SelectedNode": "\\src\\assets\\settings.json",
+  "SelectedNode": "\\src\\app\\shared\\enums\\e-wave-type.ts",
   "PreviewInSolutionExplorer": false
 }

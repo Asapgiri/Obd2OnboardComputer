@@ -32,6 +32,7 @@ export class MediaPlayerService implements IMediaPlayerService {
 
   public setShuffled(shuffled: boolean): void {
     this.playlist.isShuffled = shuffled
+    if (this.playlist.isShuffled) this.shufflePlaylist()
     this.save()
   }
 
@@ -74,6 +75,7 @@ export class MediaPlayerService implements IMediaPlayerService {
     }
     else this.initPlaylist()
     this.save()
+    //console.log(this.getPlaylist())
   }
 
   public getNextSong(): Song | undefined {
@@ -139,6 +141,19 @@ export class MediaPlayerService implements IMediaPlayerService {
     this.current = { song: this.playlist.getSong(index), id: index }
   }
 
+  public initPlaylist(isShuffled: boolean = false): void {
+    this.playlist.isShuffled = isShuffled
+    this.playlist.set(this.songs)
+    this.current = {
+      song: this.playlist.getSong(0),
+      id: 0
+    }
+    if (this.playlist.isShuffled)
+      this.current = this.playlist.shuffle()
+    this.save()
+  }
+  
+
 
   // PRIVATE PART
 
@@ -149,18 +164,6 @@ export class MediaPlayerService implements IMediaPlayerService {
       this.songs.push({ pretty: songsrc.slice(0, songsrc.lastIndexOf('.')), src: songsrc })
     })
     this.load()
-  }
-
-  private initPlaylist(): void {
-    this.playlist.set(this.songs)
-    this.current = {
-      song: this.playlist.getSong(0),
-      id: 0
-    }
-    if (this.playlist.isShuffled)
-      this.shufflePlaylist()
-    this.globalsService.globalSettings.mp.player.lastPlaylist = this.playlist.get()
-    this.globalsService.saveSettings()
   }
 
   private save(): void {
@@ -179,5 +182,7 @@ export class MediaPlayerService implements IMediaPlayerService {
     this.playlist.set(savedPlayer.lastPlaylist)
     this.playlist.isRepeate = savedPlayer.isRepeate
     this.playlist.isShuffled = savedPlayer.isShuffle
+
+    if (!this.current.song) this.current.song = { src: '', pretty: '' }
   }
 }

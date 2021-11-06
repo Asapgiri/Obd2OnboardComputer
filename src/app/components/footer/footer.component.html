@@ -1,0 +1,15 @@
+<footer class="text-lg-start fixed-bottom">
+  <div class="container-fluid">
+    <div class="row footer-row">
+      <div class="col-2 list-group list-group-flush p-2">
+        {{globalsService.time | date: 'HH : mm'}}
+      </div>
+      <div class="col-7 list-group list-group-flush p-2 text-center">
+
+      </div>
+      <div class="col-3 list-group list-group-flush p-2 text-end">
+        {{globalsService.temperature ? globalsService.temperature : ''}}
+      </div>
+    </div>
+  </div>
+</footer>

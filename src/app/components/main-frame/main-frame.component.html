@@ -1,0 +1,6 @@
+<app-header [buttonText]="appsButtonText" [clickEvent]="'changeScreen'" [parent]="this"></app-header>
+
+<app-main-screen *ngIf="!appsScreen"></app-main-screen>
+<app-apps-screen *ngIf="appsScreen"></app-apps-screen>
+
+<app-footer></app-footer>

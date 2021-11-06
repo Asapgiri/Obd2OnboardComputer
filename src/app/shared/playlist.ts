@@ -25,7 +25,7 @@ export class Playlist implements IPlaylist {
 
   public set(src: string[] | Song[]): void {
     if (typeof src == typeof this.playlist) {
-      this.playlist = src as Song[]
+      this.playlist = [...src as Song[]]
     }
     else {
       this.playlist = []
@@ -40,14 +40,15 @@ export class Playlist implements IPlaylist {
     else return false
   }
 
-  public shuffle(current: Current): Current {
+  public shuffle(current?: Current): Current {
     let falseSongList
-    const plLength = this.playlist.length
+    let plLength = this.playlist.length
 
-    if (current.song.src != '') {
-      falseSongList = this.playlist.filter(x => x != current.song)
+    if (current && current.song.src != '') {
+      falseSongList = this.playlist.filter(x => x != current?.song)
       this.playlist = [current.song]
       current.id = 0
+      plLength--
     }
     else {
       falseSongList = this.playlist
@@ -60,7 +61,8 @@ export class Playlist implements IPlaylist {
       falseSongList.splice(random, 1)
     }
 
-    if (current.song.src == '') current = { song: this.playlist[0], id: 0 }
+    if (!current || current.song.src == '') current = { song: this.playlist[0], id: 0 }
+    //console.log(this.playlist)
 
     return current
   }

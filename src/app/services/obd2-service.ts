@@ -44,8 +44,8 @@ export class Obd2Service {
 
   private requestObdData(): void {
     const self = this
-    if (this.globalsService.obd) this.globalsService.obd.on('dataReceived', function (data: OBDCollector) {
-      console.log(data);
+    if (this.globalsService.obd) this.globalsService.obd.on('data', function (data: OBDCollector) {
+      //console.log(data);
       if (data.name) {
         switch (data.name) {
           case 'vss': self.data.speed = data.value as number; break

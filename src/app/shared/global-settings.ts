@@ -1,4 +1,7 @@
 import { Current, Song } from "../services/media-player-service";
+import { MetricType } from "./enums/e-metryc-types";
+import { TempType } from "./enums/e-temps";
+import { WaveType } from "./enums/e-wave-type";
 
 export type GlobalSettings = {
   assetDir: string,
@@ -13,7 +16,8 @@ export type GlobalSettings = {
   },
   temp: {
     refreshInterval: number,
-    precision: number
+    precision: number,
+    type: TempType
   },
   time: {
     refreshInterval: number
@@ -22,8 +26,7 @@ export type GlobalSettings = {
     fileDir: string,
     fileDirAfterBuild: string,
     wave: {
-      type: string,
-      usable_types: string[],
+      type: WaveType
       stroke: number,
       colors: string[]
     },
@@ -34,7 +37,10 @@ export type GlobalSettings = {
       isRepeate: boolean,
       isShuffle: boolean,
       volume: number
-    }
+    },
+    playOnStartup: boolean,
+    animations: boolean,
+    colorSceme: string
   },
   api: {
     url: string,
@@ -53,5 +59,7 @@ export type GlobalSettings = {
     options: {
       baudRate: number
     }
-  }
+  },
+  developerMode: boolean,
+  metricType: MetricType
 }
