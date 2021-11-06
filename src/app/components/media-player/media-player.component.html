@@ -59,13 +59,13 @@
       <button class="musicPlay right-button" (click)="playAllSongs(true)">Shuffle All</button>
     </div>
     <div *ngFor="let item of mediaService.getSongs(); index as i">
-      <button class="musicName" [style]="{'background': music.Name == item.pretty ? 'green' : ''}" (click)="setSong(item, i)"><span>{{i+1}}.</span> {{item.pretty}} {{music.Name == item.pretty ? ' | now playing...' : ''}}</button>
+      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i)"><span>{{i+1}}.</span> {{item.pretty}} {{music.Name == item.pretty ? ' | now playing...' : ''}}</button>
       <button class="musicInteract" *ngIf="music.Name != item.pretty" (click)="mediaService.addToPlaylist(i)">Add</button>
     </div>
   </div>
   <div *ngIf="isSelectMusicFromPlaylist" id="musicList" class="container-inner">
     <div *ngFor="let item of mediaService.getPlaylist(); index as i">
-      <button class="musicName" [style]="{'background': music.id == i ? 'green' : ''}" (click)="setSong(item, i, true)"><span>{{i+1}}.</span> {{item ? item.pretty : '---'}} {{music.id == i ? ' | now playing...' : ''}}</button>
+      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i, true)"><span>{{i+1}}.</span> {{item ? item.pretty : '---'}} {{music.id == i ? ' | now playing...' : ''}}</button>
       <button class="musicInteract" *ngIf="music.Name != item.pretty" (click)="mediaService.removeFromPlaylist(i)">X</button>
     </div>
   </div>

@@ -24,6 +24,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100%;
     position: absolute;
     font-size: 16px;
+    overflow: auto;
 }
 
 .container-inner {

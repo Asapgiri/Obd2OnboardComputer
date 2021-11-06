@@ -4,12 +4,13 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\components",
+    "\\src\\app\\components\\media-player",
     "\\src\\app\\services",
     "\\src\\app\\services\\ifnteraces",
     "\\src\\app\\shared",
     "\\src\\app\\shared\\enums",
     "\\src\\app\\shared\\types"
   ],
-  "SelectedNode": "\\src\\app\\shared\\enums\\e-wave-type.ts",
+  "SelectedNode": "\\src\\styles.css",
   "PreviewInSolutionExplorer": false
 }

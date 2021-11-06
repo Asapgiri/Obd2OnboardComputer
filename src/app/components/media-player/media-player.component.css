@@ -49,12 +49,13 @@
   font-weight: 600;
   text-align: left;
   color: white;
+  display: flex;
+  align-items: initial;
 }
 #musicList button {
   background: #888;
   margin: 0px;
   padding: 5px;
-  height: 100%;
 }
 .musicName {
   border-radius: 7px 0px 0px 7px;
@@ -80,6 +81,12 @@
 #musicListButtons {
   display: flex;
   justify-content: space-between;
+}
+.selectedMusic {
+  background-color: greenyellow !important;
+  margin: 4px 0px !important;
+  border-radius: 7px;
+  width: 100%;
 }
 
 .control-button {
