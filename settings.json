@@ -1,1 +1,64 @@
-{"assetDir":"dist/OBD2OnboardComputer/browser/assets","map":{"minZoom":15,"maxZoom":18,"defaultZoom":15,"lastCoordinates":{"lng":18.8821291923523,"lat":47.7808951240949}},"temp":{"refreshInterval":30000,"precision":1,"type":"°C"},"time":{"refreshInterval":1000},"mp":{"fileDir":"C:\\Users\\Mika\\Music","wave":{"type":"shockwave","stroke":2,"colors":["#ac00e6","skyblue","#ff4d4d"]},"deviceId":"02d4710df39355943bc9a1e960ee948dd06b8bc9402473ddd7c94f6327ca84a5","player":{"lastPlayed":{"song":{"pretty":"-[DnB] - MKon - My Undead Friend","src":"-[DnB] - MKon - My Undead Friend.mp3"},"id":0},"isRepeate":true,"isShuffle":false,"lastPlaylist":[{"pretty":"-[DnB] - MKon - My Undead Friend","src":"-[DnB] - MKon - My Undead Friend.mp3"}],"volume":0.5},"playOnStartup":true},"api":{"url":"http://localhost:3000/api","mp":"mp","obd":"obd","temp":"https://api.openweathermap.org/data/2.5/weather","gps":"gps"},"obd":{"refreshInterval":1000,"useMetricSystem":true,"precision":2,"isConnected":true,"port":"/dev/ttyUSB0","pollers":["vss","rpm","temp","maf", "iat"],"options":{"baudRate":38400}},"developerMode":true,"metricType":"km"}
+{
+  "assetDir": "dist/OBD2OnboardComputer/browser/assets",
+  "map": {
+    "minZoom": 15,
+    "maxZoom": 18,
+    "defaultZoom": 15,
+    "lastCoordinates": {
+      "lng": 18.8821291923523,
+      "lat": 47.7808951240949
+    }
+  },
+  "temp": {
+    "refreshInterval": 30000,
+    "precision": 1,
+    "type": "°C"
+  },
+  "time": { "refreshInterval": 1000 },
+  "mp": {
+    "fileDir": "C:\\Users\\Mika\\Music",
+    "wave": {
+      "type": "shockwave",
+      "stroke": 2,
+      "colors": [ "#ac00e6", "skyblue", "#ff4d4d" ]
+    },
+    "deviceId": "02d4710df39355943bc9a1e960ee948dd06b8bc9402473ddd7c94f6327ca84a5",
+    "player": {
+      "lastPlayed": {
+        "song": {
+          "pretty": "-[DnB] - MKon - My Undead Friend",
+          "src": "-[DnB] - MKon - My Undead Friend.mp3"
+        },
+        "id": 0
+      },
+      "isRepeate": true,
+      "isShuffle": false,
+      "lastPlaylist": [
+        {
+          "pretty": "-[DnB] - MKon - My Undead Friend",
+          "src": "-[DnB] - MKon - My Undead Friend.mp3"
+        }
+      ],
+      "volume": 0.5
+    },
+    "playOnStartup": true
+  },
+  "api": {
+    "url": "http://localhost:3000/api",
+    "mp": "mp",
+    "obd": "obd",
+    "temp": "https://api.openweathermap.org/data/2.5/weather",
+    "gps": "gps"
+  },
+  "obd": {
+    "refreshInterval": 1000,
+    "useMetricSystem": true,
+    "precision": 2,
+    "isConnected": true,
+    "port": "/dev/ttyUSB0",
+    "pollers": [ "vss", "rpm", "temp", "maf", "iat" ],
+    "options": { "baudRate": 38400 }
+  },
+  "developerMode": true,
+  "metricType": "km"
+}

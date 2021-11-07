@@ -4,13 +4,13 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\components",
-    "\\src\\app\\components\\media-player",
+    "\\src\\app\\components\\settings",
     "\\src\\app\\services",
     "\\src\\app\\services\\ifnteraces",
     "\\src\\app\\shared",
     "\\src\\app\\shared\\enums",
     "\\src\\app\\shared\\types"
   ],
-  "SelectedNode": "\\src\\styles.css",
+  "SelectedNode": "\\src\\app\\components\\media-player\\media-player.component.ts",
   "PreviewInSolutionExplorer": false
 }

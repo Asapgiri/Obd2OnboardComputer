@@ -1,4 +1,5 @@
-const settings = JSON.parse(require('fs').readFileSync('settings.json')).obd
+const path = require('path')
+const settings = JSON.parse(require('fs').readFileSync(path.join(__dirname, 'settings.json'))).obd
 const OBDReader = require('obd2-over-serial')
 
 console.log(settings)
@@ -10,10 +11,11 @@ serialOBDReader.on('dataReceived', function (data) {
 
 serialOBDReader.on('connected', function (data) {
   console.log(data)
-  for (const poller in settings.pollers)
+  settings.pollers.forEach(poller => {
     this.addPoller(poller)
-
-  this.startPolling(self.globalSettings.obd.refreshInterval) //Polls all added pollers each x ms.
+    console.log('ADDED POLLER:', poller)
+  })
+  this.startPolling(settings.refreshInterval) //Polls all added pollers each x ms.
 });
 
 serialOBDReader.connect();
