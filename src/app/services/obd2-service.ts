@@ -44,28 +44,35 @@ export class Obd2Service {
 
   private requestObdData(): void {
     const self = this
-    if (this.globalsService.obd) this.globalsService.obd.on('data', function (data: OBDCollector) {
-      //console.log(data);
-      if (data.name) {
-        switch (data.name) {
-          case 'vss': self.data.speed = data.value as number; break
-          case 'rpm': self.data.rev = data.value as number; break
-          case 'temp': self.data.temp = data.value as number; break
-          case 'maf': self.calculateConsumptioton(self, data.value as number); break
-        }
-
-        self.isDataFreshAvailable = true
-        self.isConnectionValid = true
-        self.isUnableToConnect = false
-      }
-      else {
-        if (data.value == 'SEARCHING...') self.isConnectionValid = false
-        else if (data.value == 'UNABLE TO CONNECT') self.isUnableToConnect = true
-        self.isDataFreshAvailable = false
-      }
-    });
-
     setTimeout(() => {
+      if (this.globalsService.obd) this.globalsService.obd.stdout.on('data', function (data: string) {
+        console.log('OBD2 SERVICE:', data);
+
+        data.split('\n').forEach(d => {
+          if (d) {
+            console.log(d)
+            const parsedData = JSON.parse(d) as OBDCollector
+            if (parsedData.name) {
+              switch (parsedData.name) {
+                case 'vss': self.data.speed = parsedData.value as number; break
+                case 'rpm': self.data.rev = parsedData.value as number; break
+                case 'temp': self.data.temp = parsedData.value as number; break
+                case 'maf': self.calculateConsumptioton(self, parsedData.value as number); break
+              }
+
+              self.isDataFreshAvailable = true
+              self.isConnectionValid = true
+              self.isUnableToConnect = false
+            }
+            else {
+              if (parsedData.value == 'SEARCHING...') self.isConnectionValid = false
+              else if (parsedData.value == 'UNABLE TO CONNECT') self.isUnableToConnect = true
+              self.isDataFreshAvailable = false
+            }
+          }
+        })
+      });
+
       if (!this.globalsService.obd) {
         this.removeInterval()
         this.intervalId = setInterval(() => this.data = new OBD2Data(this.globalsService.getOBD2Data()), this.globalsService.globalSettings.obd.refreshInterval)

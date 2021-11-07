@@ -6,7 +6,7 @@ console.log(settings)
 var serialOBDReader = new OBDReader(settings.port, settings.options);
 
 serialOBDReader.on('dataReceived', function (data) {
-  console.log(data);
+  console.log(JSON.stringify(data));
 });
 
 serialOBDReader.on('connected', function (data) {

@@ -149,11 +149,13 @@ export class GlobalsService {
       }
     }, 1000)*/
 
-    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
+    // this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
+    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.mock.js')])
     this.obd.stdout.setEncoding('utf8')
     this.obd.stderr.setEncoding('utf8')
     this.obd.stdout.on('data', (data: any) => {
       console.log(data)
+      console.log(typeof data)
     })
     this.obd.stderr.on('data', (data: any) => {
       console.log(data)
