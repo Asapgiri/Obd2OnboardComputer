@@ -78,10 +78,10 @@ export class MediaPlayerComponent implements OnInit {
 
     }
     else {
-      this.music = { Name: this.mediaService.getCurrentSong().pretty, toggleButton: 'Pause', id: this.mediaService.getCurrentSongId() }
+      this.music = { Name: this.mediaService.getCurrentSong().pretty, toggleButton: 'Play', id: this.mediaService.getCurrentSongId() }
       if (!this.audioService.audio.src) {
         //this.mediaService.resetPlaylist()
-        if (this.music.Name) this.audioService.setAudio(`assets/music/${this.mediaService.getCurrentSong().src}`, false)
+        if (this.music.Name) this.audioService.setAudio(this.globalsService.getSongPath(this.mediaService.getCurrentSong().src), false)
         this.music.toggleButton = 'Play'
         //this.audioService.setAudio('api/bt')
         this.audioService.audio.addEventListener('timeupdate', () => {
@@ -166,7 +166,7 @@ export class MediaPlayerComponent implements OnInit {
       id: this.mediaService.getCurrentSongId()
     }
     try {
-      this.audioService.setAudio(`assets/music/${song.src}`)
+      this.audioService.setAudio(this.globalsService.getSongPath(song.src))
     }
     catch (e) {
       this.seekNextSong()

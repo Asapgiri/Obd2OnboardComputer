@@ -66,6 +66,9 @@ export class GlobalsService {
 
     return this.fs.readdirSync(dirPath)
   }
+  public getSongPath(src: string): string {
+    return this.path.join(this.globalSettings.mp.fileDir, src)
+  }
 
   public getOBD2Data(): CustumObdArgsByMe {
     //return this.getServerData(this.globalSettings.api.obd)
