@@ -11,9 +11,9 @@ serialOBDReader.on('dataReceived', function (data) {
 serialOBDReader.on('connected', function (data) {
   console.log(data)
   for (const poller in settings.pollers)
-    self.obd.addPoller(poller)
+    this.addPoller(poller)
 
-  self.obd.startPolling(self.globalSettings.obd.refreshInterval) //Polls all added pollers each x ms.
+  this.startPolling(self.globalSettings.obd.refreshInterval) //Polls all added pollers each x ms.
 });
 
 serialOBDReader.connect();
