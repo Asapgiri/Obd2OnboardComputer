@@ -23,8 +23,7 @@ export type GlobalSettings = {
     refreshInterval: number
   },
   mp: {
-    fileDir: string,
-    fileDirAfterBuild: string,
+    fileDir: string
     wave: {
       type: WaveType
       stroke: number,

@@ -60,7 +60,8 @@ export class GlobalsService {
   public getSongs(path?: string): string[] {
     //return this.getServerData(this.globalSettings.api.mp)
 
-    const dirPath = this.path.join(this.appPath, this.globalSettings.mp.fileDir)
+    // const dirPath = this.path.join(this.appPath, this.globalSettings.mp.fileDir)
+    const dirPath = this.globalSettings.mp.fileDir
     console.log(dirPath)
 
     return this.fs.readdirSync(dirPath)
