@@ -23,6 +23,8 @@ import { AudioService } from './services/audio-service';
 import { NgAudioVisualizerModule } from 'ng-audio-visualizer';
 import { MediaPlayerService } from './services/media-player-service';
 import { Obd2Service } from './services/obd2-service';
+import { MapComponent } from './components/map/map.component';
+import { OverwievComponent } from './components/overwiev/overwiev.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { Obd2Service } from './services/obd2-service';
     MediaPlayerComponent,
     SettingsComponent,
     FooterComponent,
-    HeaderComponent
+    HeaderComponent,
+    MapComponent,
+    OverwievComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),

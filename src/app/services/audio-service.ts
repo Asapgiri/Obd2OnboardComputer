@@ -15,8 +15,8 @@ export class AudioService {
     constructor() {
       this.audio = new Audio();
       this.audio.id = 'audio_element'
-      console.log('Audio element id:', this.audio.id)
-        this.attachListeners();
+      //console.log('Audio element id:', this.audio.id)
+      this.attachListeners();
     }
 
     private attachListeners(): void {

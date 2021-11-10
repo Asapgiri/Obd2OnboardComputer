@@ -1,0 +1,21 @@
+.screen-container {
+    overflow: auto;
+}
+
+.settings-group {
+    border: 2px solid #888;
+    margin: 2px;
+    padding: 5px;
+}
+
+.setting {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #888;
+}
+
+#save-button {
+  margin: 2px;
+  padding: 5px;
+  right: 0px;
+}

@@ -1,16 +1,30 @@
 <app-header [buttonRoute]="['']"></app-header>
 
-<div class="screen-container">
-  <div *ngFor="let group of settings">
-    <hr />
-    <h2>{{ group.title }}</h2>
-    <div *ngFor="let setting of group.settings">
+<div class="screen-container ">
+  <div class="settings-group" *ngFor="let group of settings; let i = index">
+    <b>{{ group.title }}</b>
+    <div class="setting" *ngFor="let setting of group.settings; let j = index">
       <span>{{ setting.title }}:</span>
-      {{ setting.type }}
-      {{ setting.value }}
-      <span *ngFor="let opt in setting.options">{{ opt }}</span>
+      <span *ngIf="setting.type == SettingType.date">
+        <input id="date_{{ i+'_'+j }}" type="date" name="date" value="{{ setting.value | date: 'yyyy-dd-mm' }}" (change)="setting.function('date_'+i+'_'+j, 'time_'+i+'_'+j)" />
+        <input id="time_{{ i+'_'+j }}" type="time" name="time" value="{{ setting.value | date: 'HH:mm' }}" (change)="setting.function('date_'+i+'_'+j, 'time_'+i+'_'+j)" />
+      </span>
+      <span *ngIf="setting.type == SettingType.select">
+        <select id="select_{{ i+'_'+j }}" *ngIf="setting.options" [(ngModel)]="setting.value" (change)="setting.function('select_'+i+'_'+j)">
+          <option *ngFor="let opt of setting.options" [ngValue]="opt">
+            {{ opt }}
+          </option>
+        </select>
+      </span>
+      <span *ngIf="setting.type == SettingType.check">
+        <input id="check_{{ i+'_'+j }}" type="checkbox" checked="{{ setting.value }}" (change)="setting.function('check_'+i+'_'+j)" />
+      </span>
+      <span *ngIf="setting.type == SettingType.colors">
+        <input id="color_{{ i+'_'+j+'_'+k }}" *ngFor="let val of setting.value; let k = index" type="color" value="{{ val }}" (change)="setting.function('color_'+i+'_'+j+'_'+k, k.toString())" />
+      </span>
     </div>
   </div>
+  <button id="save-button" (click)="saveSettings()">Save</button>
 </div>
 
 <app-footer></app-footer>

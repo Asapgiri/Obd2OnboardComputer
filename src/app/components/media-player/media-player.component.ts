@@ -81,7 +81,7 @@ export class MediaPlayerComponent implements OnInit {
       this.music = { Name: this.mediaService.getCurrentSong().pretty, toggleButton: 'Play', id: this.mediaService.getCurrentSongId() }
       if (!this.audioService.audio.src) {
         //this.mediaService.resetPlaylist()
-        if (this.music.Name) this.audioService.setAudio(this.globalsService.getSongPath(this.mediaService.getCurrentSong().src), false)
+        if (this.music.Name) this.audioService.setAudio(this.mediaService.getCurrentSong().src, false)
         this.music.toggleButton = 'Play'
         //this.audioService.setAudio('api/bt')
         this.audioService.audio.addEventListener('timeupdate', () => {
@@ -166,7 +166,7 @@ export class MediaPlayerComponent implements OnInit {
       id: this.mediaService.getCurrentSongId()
     }
     try {
-      this.audioService.setAudio(this.globalsService.getSongPath(song.src))
+      this.audioService.setAudio(song.src)
     }
     catch (e) {
       this.seekNextSong()

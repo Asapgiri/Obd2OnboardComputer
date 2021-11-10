@@ -1,13 +1,9 @@
 import { Injectable } from "@angular/core";
-import { CustumObdArgsByMe, OBD2Data } from "../shared/obd2-data";
+import { OBD2Data } from "../shared/obd2-data";
+import { OBDCollector } from "../shared/types/t-obd-collector";
+import { DrivingStyler } from "./driving-style";
 import { GlobalsService } from "./globals-service";
-
-export type OBDCollector = {
-  mode?: string,
-  pid?: string,
-  value: number|string,
-  name?: string
-}
+import { IDrivingStyler } from "./ifnteraces/i-driving-styler";
 
 @Injectable()
 export class Obd2Service {
@@ -22,6 +18,7 @@ export class Obd2Service {
   private calculateValueIndex: number
   private addedFuelBeforeCalculated: number = 0
   private isJustSturted: boolean = true
+  private drivingStyler: IDrivingStyler
 
   constructor(private globalsService: GlobalsService) {
     this.data = new OBD2Data()
@@ -29,6 +26,7 @@ export class Obd2Service {
     this.calculateValueIndex = this.bufferSize / 4
     this.pastFuelDataBuffer = []
     this.initOBD2()
+    this.drivingStyler = new DrivingStyler(this.data, this.globalsService.getAppPath())
   }
 
   public removeInterval(): void {
@@ -45,7 +43,7 @@ export class Obd2Service {
   private requestObdData(): void {
     const self = this
     setTimeout(() => {
-      if (this.globalsService.obd) this.globalsService.obd.stdout.on('data', function (data: string) {
+      if (this.globalsService.obd) this.globalsService.obd.stdout.on('data', (data: string) => {
         console.log('OBD2 SERVICE:', data);
 
         data.split('\n').forEach(d => {
@@ -71,6 +69,8 @@ export class Obd2Service {
             }
           }
         })
+
+        self.drivingStyler.calculateNextDS()
       });
 
       if (!this.globalsService.obd) {
@@ -90,7 +90,7 @@ export class Obd2Service {
       if (self.addedFuelBeforeCalculated > self.calculateValueIndex || (self.isJustSturted && self.addedFuelBeforeCalculated > 25)) {
         let sum = 0
         self.pastFuelDataBuffer.forEach(data => sum += data)
-        self.data.fuelCons.long = (sum / this.pastFuelDataBuffer.length).toPrecision(self.globalsService.globalSettings.obd.precision)
+        self.data.fuelCons.long = (sum / this.pastFuelDataBuffer.length * 100).toPrecision(self.globalsService.globalSettings.obd.precision)
         
         self.addedFuelBeforeCalculated = 0
         self.isJustSturted = false

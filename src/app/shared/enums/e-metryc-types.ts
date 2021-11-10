@@ -1,4 +1,4 @@
 export enum MetricType {
-  Imperial = 'm',
+  Imperial = 'miles',
   Metric = 'km'
 }

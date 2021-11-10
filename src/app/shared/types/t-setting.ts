@@ -5,5 +5,5 @@ export type Setting = {
   type: SettingType,
   value: any,
   options?: string[],
-  function: () => void
+  function: (objectId: string, param2?: string) => void
 }

@@ -6,6 +6,10 @@ import { HttpClient } from '@angular/common/http'
 import { GlobalSettings } from '../shared/global-settings'
 import * as fs from 'fs'
 import path from 'path'
+import { TempType } from "../shared/enums/e-temps"
+import { DataSaver } from "./repo/data-saver"
+import { OBDCollector } from "../shared/types/t-obd-collector"
+import { MediaPlayerService, Song } from "./media-player-service"
 
 
 @Injectable()
@@ -13,38 +17,44 @@ export class GlobalsService {
   public globalSettings: GlobalSettings//: IGlobalSettings
   public time: Date
   public temperature: string = '-'
-  public obd
+  public obd: any
+  public gps: any
+  public usb: any
 
   private travelled = 0
   private fs: typeof fs
   private path: typeof path
   private spawn
   private appPath: string
+  private actualCoordinates: Coordinates
+  private dataSaver: DataSaver
+
 
   constructor(private electronService: ElectronService, private http: HttpClient) {
     this.appPath = this.electronService.remote.app.getAppPath()
     console.log(this.appPath)
-    //this.globalSettings = window.require('dist/OBD2OnboardComputer/browser/assets/settings.json')
-    //this.globalSettings = settingJSON
 
-    //console.log(this.globalSettings)
-    //console.log(this.electronService.isX64)
-    //this.electronService.process?.require('fs')
     this.fs = window.require('fs')
     this.path = window.require('path')
     this.globalSettings = this.loadSettings()
-    this.obd = window.require('obd2-over-serial')
     this.spawn = window.require('child_process').spawn
     this.initOBDReader()
-    //console.log(BrowserWindow)
+    this.actualCoordinates = this.globalSettings.map.lastCoordinates
+    this.dataSaver = new DataSaver(this.fs, this.path, this.appPath)
+    this.initGPS()
+    this.initUSB()
 
     this.time = new Date()
     setInterval(() => this.time = new Date(), this.globalSettings.time.refreshInterval)
 
-    async () =>  {
+    /*async () =>  {
       this.temperature = await this.getTemperature()
     }
-    setInterval(async () => this.temperature = await this.getTemperature(), this.globalSettings.temp.refreshInterval)
+    setInterval(async () => this.temperature = await this.getTemperature(), this.globalSettings.temp.refreshInterval)*/
+  }
+
+  public getAppPath(): string {
+    return this.appPath
   }
 
   public saveSettings() {
@@ -57,22 +67,57 @@ export class GlobalsService {
     window.close()
   }
 
-  public getSongs(path?: string): string[] {
-    //return this.getServerData(this.globalSettings.api.mp)
-
+  public getSongs(path?: string): Song[] {
     // const dirPath = this.path.join(this.appPath, this.globalSettings.mp.fileDir)
     const dirPath = this.globalSettings.mp.fileDir
     console.log(dirPath)
 
-    return this.fs.readdirSync(dirPath)
+    const songPaths = this.findSongs(this.globalSettings.mp.fileDir)
+    let songs: Song[] = []
+    songPaths.forEach(song => {
+      songs.push({
+        pretty: song.slice(song.lastIndexOf('/')+1, song.lastIndexOf('.')),
+        src: song
+      })
+    })
+    console.log('GS getSongs:', songs)
+
+    return songs
   }
-  public getSongPath(src: string): string {
+  private findSongs(dirpath?: string): string[] {
+    let songs: string[] = []
+    if (!dirpath) dirpath = '/media/pi'
+
+      let files: string[]
+    try {
+      files = this.fs.readdirSync(dirpath)
+    } catch (e) {
+      files = []
+    }
+
+    files.forEach(file => {
+      if (file.indexOf('.') == -1) {
+        const dirfiles = this.findSongs(`${dirpath}/${file}`)
+        //console.log(dirfiles, dirpath)
+        dirfiles.forEach(x => songs.push(x))
+      }
+      //else console.log(file.split('.')[-1])
+      else {
+        const fileTmb = file.split('.')
+        const ext = fileTmb[fileTmb.length - 1]
+        if (ext == 'mp3') {
+          //console.log(file)
+          songs.push(`${dirpath}/${file}`)
+        }
+      }
+    })
+    return songs
+  }
+  /*public getSongPath(src: string): string {
     return this.path.join(this.globalSettings.mp.fileDir, src)
-  }
+  }*/
 
   public getOBD2Data(): CustumObdArgsByMe {
-    //return this.getServerData(this.globalSettings.api.obd)
-
     return {
       speed: Math.floor(Math.random() * 200),
       gear: Math.floor(Math.random() * 6),
@@ -88,18 +133,13 @@ export class GlobalsService {
   }
 
   public getGpsLocation(): Coordinates {
-    //return this.getServerData(this.globalSettings.api.gps)
-
-    return {
-      lat: 47.7808951240949,
-      lng: 18.8821291923523
-    }
+    return this.actualCoordinates
   }
 
 
 
 
-  private async getTemperature(): Promise<string> {
+  private async getTemperatureOnline(): Promise<string> {
     const location = this.getGpsLocation()
     const data = await this.getServerData(this.globalSettings.api.temp, {
       lat: location.lat,
@@ -111,6 +151,17 @@ export class GlobalsService {
 
 
     //return parseFloat((Math.random() * 20).toFixed(this.globalSettings.temp.precision))
+  }
+
+  private setTemperature(tempC: number): void {
+    const tempType = this.globalSettings.temp.type
+    let temp
+    switch (tempType) {
+      case TempType.Celsius: temp = tempC; break
+      case TempType.Fahrenheit: temp = tempC * 1.8 + 32; break
+      case TempType.Kelvin: temp = tempC + 272.15; break
+    }
+    this.temperature = `${temp} ${tempType}`
   }
 
   private async getServerData(api: string, params?: any, globalApiUrl: boolean = true): Promise<any> {
@@ -126,42 +177,48 @@ export class GlobalsService {
     return await this.http.get<any>(url).toPromise<any>()
   }
 
-  private initOBDReader() {
-    /*this.obd = new this.obd(this.globalSettings.obd.port, this.globalSettings.obd.options)
-
-    const self = this
-
-    this.obd.on('connected', function (data: OBDCollector) {
-      console.log(data)
-      for (const poller in self.globalSettings.obd.pollers)
-        self.obd.addPoller(poller)
-
-      self.obd.startPolling(self.globalSettings.obd.refreshInterval) //Polls all added pollers each x ms.
-    });
-    
-    setTimeout(() => {
-      try {
-        this.obd.connect()
-      }
-      catch (err) {
-        console.log(err)
-        this.obd = null
-      }
-    }, 1000)*/
-
-    // this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
-    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.mock.js')])
+  private initOBDReader(): void {
+    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
     this.obd.stdout.setEncoding('utf8')
     this.obd.stderr.setEncoding('utf8')
-    this.obd.stdout.on('data', (data: any) => {
-      console.log(data)
-      console.log(typeof data)
-    })
-    this.obd.stderr.on('data', (data: any) => {
-      console.log(data)
-    })
+    this.obd.stdout.on('data', (data: string) => {
+      console.log('Temp parser data')
+      data.split('\n').forEach(d => {
+        if (d) {
+          console.log(d)
+          try {
+            const parsedData = JSON.parse(d) as OBDCollector
+            if (parsedData.name == 'iat') this.setTemperature(parsedData.value as number)
+          }
+          catch (e) {
+            // TODO: ERROR MESSAGE TO WANNABE LOGGER SOMETIME
+          }
+        }
+      })
 
-
+      if (this.globalSettings.developerMode) console.log(data)
+    })
+    this.obd.stderr.on('data', (data: string) => {
+      if (data.length < 1000) console.log(typeof data, data)
+    })
   }
 
+  private initGPS(): void {
+    this.gps = this.spawn('node', [this.path.join(this.appPath, 'gps.js')])
+    this.gps.stdout.setEncoding('utf8')
+    this.gps.stderr.setEncoding('utf8')
+    this.gps.stderr.on('data', (data: string) => {
+      if (data.length < 1000) console.log(data)
+    })
+    this.dataSaver.init(this.gps, this.obd)
+  }
+
+  private initUSB(): void {
+    this.usb = this.spawn('node', [this.path.join(this.appPath, 'usb.js')])
+    this.usb.stdout.setEncoding('utf8')
+    this.usb.stderr.setEncoding('utf8')
+    this.usb.stderr.on('data', (data: string) => {
+      console.log('USB SERVICE ERROR:', data)
+    })
+  }
 }

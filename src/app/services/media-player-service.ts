@@ -21,6 +21,15 @@ export class MediaPlayerService implements IMediaPlayerService {
   private init() {
     this.initSongs()
     if (!this.playlist.isInitialized()) this.playlist.set(this.globalsService.globalSettings.mp.player.lastPlaylist)
+
+    const self = this
+    this.globalsService.usb.stdout.on('data', function (device: any) {
+      console.log('change', device);
+      setTimeout(() => {
+        self.initSongs()
+        console.log(self.songs)
+      }, 5000)
+    });
   }
 
   // PUBLIC PART
@@ -155,16 +164,12 @@ export class MediaPlayerService implements IMediaPlayerService {
   
 
 
-  // PRIVATE PART
-
-  private initSongs(): void {
-    const songs_array = this.globalsService.getSongs()
-    //console.log(songs_array)
-    songs_array.forEach(songsrc => {
-      this.songs.push({ pretty: songsrc.slice(0, songsrc.lastIndexOf('.')), src: songsrc })
-    })
+  public initSongs(): void {
+    this.songs = this.globalsService.getSongs()
     this.load()
   }
+
+  // PRIVATE PART
 
   private save(): void {
     let savedPlayer = this.globalsService.globalSettings.mp.player
@@ -178,8 +183,12 @@ export class MediaPlayerService implements IMediaPlayerService {
 
   private load(): void {
     const savedPlayer = this.globalsService.globalSettings.mp.player
-    this.current = savedPlayer.lastPlayed
-    this.playlist.set(savedPlayer.lastPlaylist)
+    this.current = this.songs.find(song => song.src == savedPlayer.lastPlayed.song?.src) ? savedPlayer.lastPlayed : { song: { pretty: '', src: '' }, id: 0 }
+    let canBePlaylist: Song[] = []
+    savedPlayer.lastPlaylist.forEach(song => {
+      if (this.songs.find(song => song.src == song.src)) canBePlaylist.push(song)
+    })
+    this.playlist.set(canBePlaylist)
     this.playlist.isRepeate = savedPlayer.isRepeate
     this.playlist.isShuffled = savedPlayer.isShuffle
 
