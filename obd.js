@@ -2,7 +2,7 @@ const path = require('path')
 const settings = JSON.parse(require('fs').readFileSync(path.join(__dirname, 'settings.json'))).obd
 const OBDReader = require('obd2-over-serial')
 
-console.log(settings)
+//console.log(settings)
 var serialOBDReader = new OBDReader(settings.port, settings.options);
 
 serialOBDReader.on('dataReceived', function (data) {
