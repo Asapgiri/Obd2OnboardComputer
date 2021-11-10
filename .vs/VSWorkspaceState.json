@@ -7,10 +7,11 @@
     "\\src\\app\\components\\settings",
     "\\src\\app\\services",
     "\\src\\app\\services\\ifnteraces",
+    "\\src\\app\\services\\repo",
     "\\src\\app\\shared",
     "\\src\\app\\shared\\enums",
     "\\src\\app\\shared\\types"
   ],
-  "SelectedNode": "\\src\\app\\components\\media-player\\media-player.component.ts",
+  "SelectedNode": "\\src\\app\\app.module.ts",
   "PreviewInSolutionExplorer": false
 }
