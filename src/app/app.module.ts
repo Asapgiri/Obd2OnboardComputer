@@ -25,6 +25,7 @@ import { MediaPlayerService } from './services/media-player-service';
 import { Obd2Service } from './services/obd2-service';
 import { MapComponent } from './components/map/map.component';
 import { OverwievComponent } from './components/overwiev/overwiev.component';
+import { ObdOverallService } from './services/obd-overall-service';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { OverwievComponent } from './components/overwiev/overwiev.component';
     GlobalsService,
     AudioService,
     MediaPlayerService,
-    Obd2Service
+    Obd2Service,
+    ObdOverallService
   ],
   bootstrap: [AppComponent]
 })

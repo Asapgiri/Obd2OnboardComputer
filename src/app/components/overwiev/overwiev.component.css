@@ -1,0 +1,42 @@
+#obd2-data {
+  width: 45%;
+}
+
+#map-container {
+  width: 55%;
+}
+
+#obd2-table {
+  width: 100%;
+}
+
+  #obd2-table tr {
+    padding: 5px;
+  }
+
+  #obd2-table th, #obd2-table td {
+    padding: 5px 0px;
+    border-bottom: .5px solid gray;
+  }
+
+#map-container img {
+  width: 100%;
+}
+
+.obd-table-value {
+  font-size: large;
+  font-weight: 700;
+  text-align: center;
+}
+
+#map {
+  height: 100%;
+}
+
+.mapboxgl-canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}

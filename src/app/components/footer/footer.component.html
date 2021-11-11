@@ -2,13 +2,13 @@
   <div class="container-fluid">
     <div class="row footer-row">
       <div class="col-2 list-group list-group-flush p-2">
-        {{globalsService.time | date: 'HH : mm'}}
+        {{ getTime() | date: 'HH : mm' }}
       </div>
-      <div class="col-7 list-group list-group-flush p-2 text-center">
-
+      <div class="col-7 list-group p-0 list-group-flush d-flex justify-content-end">
+        <div id="colored-ds" class="m-0" [style]="{'border-bottom': '20px solid' + getDrivingStyleColor()}"></div>
       </div>
       <div class="col-3 list-group list-group-flush p-2 text-end">
-        {{globalsService.temperature ? globalsService.temperature : ''}}
+        {{ getTemperature() }}
       </div>
     </div>
   </div>

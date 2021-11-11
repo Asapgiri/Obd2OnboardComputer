@@ -43,3 +43,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Data folders
+/ds/*
+/mods/*
+/gpx/*
+/obd/*

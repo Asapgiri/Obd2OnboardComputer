@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: '', component: MainFrameComponent },
   { path: 'mp', component: MediaPlayerComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'settings/:ret', component: SettingsComponent },
   { path: 'map', component: MapComponent },
   { path: 'overwiev', component: OverwievComponent }
 ]

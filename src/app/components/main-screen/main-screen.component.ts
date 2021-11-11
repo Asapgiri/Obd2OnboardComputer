@@ -14,12 +14,12 @@ export class MainScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.obd2Service.initOBD2()
+    // this.obd2Service.initOBD2()
     this.mapService.generateMap()
   }
 
   ngOnDestroy(): void {
-    this.obd2Service.removeInterval()
+    // this.obd2Service.removeInterval()
   }
 
 

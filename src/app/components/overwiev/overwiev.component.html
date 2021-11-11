@@ -1,5 +1,45 @@
 <app-header [buttonRoute]="['']"></app-header>
 
-<p>overwiev works!</p>
+<div class="screen-container">
+  <div id="obd2-data" class="container-inner">
+    <table id="obd2-table">
+      <tr>
+        <td class="obd-table-spec">Átlag Sebesség:</td>
+        <td class="obd-table-value">{{ ovs.getAverageSpeed() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Átlag Fordulatszám:</td>
+        <td class="obd-table-value">{{ ovs.getAverageRPM() }} f.</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Átlag fokozat:</td>
+        <td class="obd-table-value">{{ ovs.getAverageGear() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Motorhőfok: (átl. - max)</td>
+        <td class="obd-table-value">{{ ovs.getMotorTemps() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Elhasznált üzemanyag:</td>
+        <td class="obd-table-value">{{ ovs.getConsumpedFuel() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Megtett út:</td>
+        <td class="obd-table-value">{{ ovs.getTravelled() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Átlagos vezetési stílus:</td>
+        <td class="obd-table-value">{{ ovs.getAverageDrivingStyle() }}</td>
+      </tr>
+      <tr>
+        <td class="obd-table-spec">Vezetési idő:</td>
+        <td class="obd-table-value">{{ ovs.getDrivingTime() }}</td>
+      <tr>
+    </table>
+  </div>
+  <div id="map-container" class="container-inner">
+    <div id="map"></div>
+  </div>
+</div>
 
 <app-footer></app-footer>

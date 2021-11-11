@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MapService } from '../../services/map-service';
+import { ObdOverallService } from '../../services/obd-overall-service';
 
 @Component({
   selector: 'app-overwiev',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OverwievComponent implements OnInit {
 
-  constructor() { }
+  constructor(private ms: MapService, public ovs: ObdOverallService) { }
 
   ngOnInit(): void {
+    // this.ms.generateMap()
   }
 
 }

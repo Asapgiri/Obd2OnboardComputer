@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { GlobalsService } from '../../services/globals-service';
 import { MetricType } from '../../shared/enums/e-metryc-types';
 import { SettingType } from '../../shared/enums/e-setting-type';
@@ -17,10 +18,11 @@ import { SettingsGroup } from '../../shared/types/t-settings-group';
 export class SettingsComponent implements OnInit {
   settings: SettingsGroup[] = []
   SettingType = SettingType
+  ret: string = ''
 
   private gs: GlobalSettings
 
-  constructor(private globals: GlobalsService) {
+  constructor(private globals: GlobalsService, private route: ActivatedRoute) {
     this.gs = JSON.parse(JSON.stringify(this.globals.globalSettings))
     this.initSettings()
   }
@@ -118,6 +120,8 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const ret = this.route.snapshot.paramMap.get('ret')
+    this.ret = ret ? '/' + ret : ''
   }
 
 }

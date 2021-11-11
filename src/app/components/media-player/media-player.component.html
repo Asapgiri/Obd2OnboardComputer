@@ -10,8 +10,11 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <ng-template #optionDropdown let-modal>
-        <div class="modal-header p-0 border-0">
+        <div *ngIf="globalsService.globalSettings.developerMode" class="modal-header p-0 border-0">
           <a class="huge-link text-muted" href="#" (click)="globalsService.closeWindow()">Kilépés</a>
+        </div>
+        <div class="modal-header p-0 border-0">
+          <a class="huge-link text-muted" href="#" [routerLink]="['/settings', 'mp']" (click)="modal.close('Settings click')">Beállítások</a>
         </div>
         <div class="modal-footer p-0">
           <a class="huge-link" href="#" (click)="modal.close('Save click')">Back</a>

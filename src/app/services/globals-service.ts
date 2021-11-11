@@ -153,7 +153,7 @@ export class GlobalsService {
     //return parseFloat((Math.random() * 20).toFixed(this.globalSettings.temp.precision))
   }
 
-  private setTemperature(tempC: number): void {
+  public setTemperature(tempC: number): string {
     const tempType = this.globalSettings.temp.type
     let temp
     switch (tempType) {
@@ -161,7 +161,7 @@ export class GlobalsService {
       case TempType.Fahrenheit: temp = tempC * 1.8 + 32; break
       case TempType.Kelvin: temp = tempC + 272.15; break
     }
-    this.temperature = `${temp} ${tempType}`
+    return `${parseFloat(temp.toPrecision(this.globalSettings.temp.precision))} ${tempType}`
   }
 
   private async getServerData(api: string, params?: any, globalApiUrl: boolean = true): Promise<any> {
@@ -188,7 +188,7 @@ export class GlobalsService {
           console.log(d)
           try {
             const parsedData = JSON.parse(d) as OBDCollector
-            if (parsedData.name == 'iat') this.setTemperature(parsedData.value as number)
+            if (parsedData.name == 'iat') this.temperature = this.setTemperature(parsedData.value as number)
           }
           catch (e) {
             // TODO: ERROR MESSAGE TO WANNABE LOGGER SOMETIME

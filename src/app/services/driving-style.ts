@@ -8,28 +8,26 @@ import path from 'path'
 export class DrivingStyler implements IDrivingStyler {
   private actualDS: DrivingValues = { vss: 0, rpm: 0, fc: 0, DS: 0, time: '' }
   private postDS: DrivingValues[] = []
-  private data: OBD2Data
   private drivingStyle: DSLimits = DSLimits.Impossible
   private fileName: string = new Date().toISOString().replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, '-') + '.ds.json'
   private fs: typeof fs = window.require('fs')
   private path: typeof path = window.require('path')
 
-  constructor(data: OBD2Data, private appPath: string) {
-    this.data = data
+  constructor(private appPath: string) {
     setInterval(() => this.save(this), 30000)
   }
 
-  public calculateNextDS(): void {
+  public calculateNextDS(data: OBD2Data): string {
     this.actualDS = {
-      vss: this.data.speed,
-      rpm: this.data.rev,
-      fc: parseFloat(this.data.fuelCons.short.split(' ')[0]),
+      vss: data.speed,
+      rpm: data.rev,
+      fc: parseFloat(data.fuelCons.short.split(' ')[0]),
       DS: 0,
       time: new Date().toISOString()
     }
     this.actualDS.DS = this.actualDS.rpm / this.actualDS.vss * this.actualDS.fc
     if (this.actualDS.DS) this.postDS.push(this.actualDS)
-    this.data.drivingStyle = this.drivingStyleSringify()
+    return this.drivingStyleSringify()
   }
 
   public getActualDrivingStyle(): DrivingValues {
@@ -38,6 +36,10 @@ export class DrivingStyler implements IDrivingStyler {
 
   public getDrivingStyles(): DrivingValues[] {
     return this.postDS
+  }
+
+  public getDrivingStyle(): DSLimits {
+    return this.drivingStyle
   }
 
   public save(self = this): void {
