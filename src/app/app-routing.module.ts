@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent },
   { path: 'settings/:ret', component: SettingsComponent },
   { path: 'map', component: MapComponent },
+  { path: 'map/:overwiev', component: MapComponent },
   { path: 'overwiev', component: OverwievComponent }
 ]
 

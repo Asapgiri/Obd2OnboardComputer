@@ -66,6 +66,7 @@ export class ObdOverallService implements IObdOverallService {
   }
 
   getTravelled(): string {
+    if (this.overallList.length == 0) return '-'
     const travelled = this.overallList[this.overallList.length - 1].travelled
 
     return this.gs.globalSettings.obd.useMetricSystem ?
@@ -74,6 +75,7 @@ export class ObdOverallService implements IObdOverallService {
   }
 
   getAverageDrivingStyle(): string {
+    if (this.overallList.length == 0) return '-'
     let counter: any = {}
     this.overallList.forEach(data => {
       if (counter[data.DS]) counter[data.DS]++
@@ -89,6 +91,7 @@ export class ObdOverallService implements IObdOverallService {
   }
 
   getDrivingTime(): string {
+    if (this.overallList.length == 0) return '-'
     const minutes = this.overallList[this.overallList.length - 1].dtime
     if (minutes < 1) return '-'
     const hours = (minutes / 60).toFixed()

@@ -12,7 +12,11 @@ export class OverwievComponent implements OnInit {
   constructor(private ms: MapService, public ovs: ObdOverallService) { }
 
   ngOnInit(): void {
-    // this.ms.generateMap()
+    this.ms.destroyMap()
+    setTimeout(() => {
+      this.ms.generateMap(false)
+      this.ms.loadTravelledRoad()
+    }, 300)
   }
 
 }

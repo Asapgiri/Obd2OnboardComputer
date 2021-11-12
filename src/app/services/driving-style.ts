@@ -21,7 +21,7 @@ export class DrivingStyler implements IDrivingStyler {
     this.actualDS = {
       vss: data.speed,
       rpm: data.rev,
-      fc: parseFloat(data.fuelCons.short.split(' ')[0]),
+      fc: parseFloat(data.fuelCons.short.split(' ')[0]) / 100,
       DS: 0,
       time: new Date().toISOString()
     }

@@ -4,6 +4,8 @@
 
 #map-container {
   width: 55%;
+  padding: 0px;
+  padding-right: 5px;
 }
 
 #obd2-table {

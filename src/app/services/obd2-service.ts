@@ -102,7 +102,7 @@ export class Obd2Service {
       if (self.addedFuelBeforeCalculated > self.calculateValueIndex || (self.isJustSturted && self.addedFuelBeforeCalculated > 25)) {
         let sum = 0
         self.pastFuelDataBuffer.forEach(data => sum += data)
-        self.data.fuelCons.long = parseFloat((sum / this.pastFuelDataBuffer.length * 100).toPrecision(self.globalsService.globalSettings.obd.precision)).toString()
+        self.data.fuelCons.long = parseFloat((sum / this.pastFuelDataBuffer.length).toPrecision(self.globalsService.globalSettings.obd.precision)).toString()
         
         self.addedFuelBeforeCalculated = 0
         self.isJustSturted = false

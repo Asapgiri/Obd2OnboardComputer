@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AudioService } from '../../services/audio-service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { GlobalsService } from '../../services/globals-service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,7 @@ export class HeaderComponent implements OnInit {
   @Input() public buttonRoute: string[] | null = null
   closeResult = ''
 
-  constructor(private modalService: NgbModal, public audioService: AudioService, public gs: GlobalsService) { }
+  constructor(private modalService: NgbModal, public audioService: AudioService, public gs: GlobalsService, public router: Router) { }
   
   ngOnInit(): void {
   }

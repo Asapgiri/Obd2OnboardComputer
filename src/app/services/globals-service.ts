@@ -5,11 +5,14 @@ import { ElectronService } from 'ngx-electron'
 import { HttpClient } from '@angular/common/http'
 import { GlobalSettings } from '../shared/global-settings'
 import * as fs from 'fs'
-import path from 'path'
+import path, { parse } from 'path'
 import { TempType } from "../shared/enums/e-temps"
 import { DataSaver } from "./repo/data-saver"
 import { OBDCollector } from "../shared/types/t-obd-collector"
 import { MediaPlayerService, Song } from "./media-player-service"
+import { strict } from "assert/strict"
+import { GPSCollector } from "../shared/types/t-gps-collector"
+import { MyGeoJSON } from "../shared/types/t-my-geo-json"
 
 
 @Injectable()
@@ -136,8 +139,13 @@ export class GlobalsService {
     return this.actualCoordinates
   }
 
+  public getGpsOutput(fn: (data: string) => void): void {
+    this.gps.stdout.on('data', fn)
+  }
 
-
+  public getGpsRoute(): MyGeoJSON {
+    return this.dataSaver.getGPSData()
+  }
 
   private async getTemperatureOnline(): Promise<string> {
     const location = this.getGpsLocation()
@@ -207,6 +215,17 @@ export class GlobalsService {
     this.gps = this.spawn('node', [this.path.join(this.appPath, 'gps.js')])
     this.gps.stdout.setEncoding('utf8')
     this.gps.stderr.setEncoding('utf8')
+    this.gps.stdout.on('data', (data: string) => {
+      data.split('\n').forEach(d => {
+        if (d) {
+          const parsedData = JSON.parse(d) as GPSCollector
+          if (parsedData.lat) this.actualCoordinates = {
+            lat: parsedData.lat,
+            lng: parsedData.lon
+          }
+        }
+      })
+    })
     this.gps.stderr.on('data', (data: string) => {
       if (data.length < 1000) console.log(data)
     })

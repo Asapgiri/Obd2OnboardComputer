@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark pt-1 pb-1">
+<nav class="navbar navbar-dark pt-1 pb-1 always-top">
   <div class="container-fluid">
     <a *ngIf="!buttonRoute" class="navbar-brand" href="#" (click)="buttonClick()" #globalButton>{{ buttonText }}</a>
     <a *ngIf="buttonRoute" class="navbar-brand" href="#" [routerLink]="buttonRoute" #globalButton>{{ buttonText }}</a>
@@ -16,7 +16,7 @@
           <a class="huge-link text-muted" href="#" (click)="closeWindow()">Kilépés</a>
         </div>
         <div class="modal-header p-0 border-0">
-          <a class="huge-link text-muted" href="#" [routerLink]="['settings']" (click)="modal.close('Settings click')">Beállítások</a>
+          <a class="huge-link text-muted" href="#" [routerLink]="['/settings', router.url]" (click)="modal.close('Settings click')">Beállítások</a>
         </div>
         <div class="modal-footer p-0">
           <a class="huge-link" href="#" (click)="modal.close('Back click')">Back</a>

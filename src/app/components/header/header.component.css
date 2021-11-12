@@ -1,0 +1,7 @@
+.always-top {
+    z-index: 100;
+}
+
+.leaflet-container {
+    overflow: inherit !important;
+}

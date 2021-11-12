@@ -24,14 +24,15 @@ export class SettingsComponent implements OnInit {
 
   constructor(private globals: GlobalsService, private route: ActivatedRoute) {
     this.gs = JSON.parse(JSON.stringify(this.globals.globalSettings))
-    this.initSettings()
+    this.initSettings() 
+    if (this.gs.developerMode) console.log(this.gs)
   }
 
   public saveSettings() {
-    this.globals.globalSettings = this.gs
+    this.globals.globalSettings = JSON.parse(JSON.stringify(this.gs))
     this.globals.saveSettings()
 
-    console.log(this.gs)
+    if (this.gs.developerMode) console.log(this.gs)
   }
 
   private initSettings() {
@@ -43,14 +44,18 @@ export class SettingsComponent implements OnInit {
             title: 'Idő / Dátum', type: SettingType.date, value: new Date(), function: (dateId: string, timeId: string) => {
               const date = (document.getElementById(dateId) as HTMLInputElement).value
               const time = (document.getElementById(timeId) as HTMLInputElement).value
-              console.log(date, time)
+              if (this.gs.developerMode) console.log(date, time)
             }
           },
           {
             title: 'Hőmérséklet', type: SettingType.select, value: this.gs.temp.type, options: Object.values(TempType), function: (objectId: string) => {
-              const tempType = (document.getElementById(objectId) as HTMLSelectElement).value.split(' ')[1]
-              this.gs.temp.type = tempType as TempType
-              console.log(tempType)
+              const tempType = (document.getElementById(objectId) as HTMLButtonElement)
+              this.gs.temp.type = tempType.innerText as TempType
+              if (this.gs.developerMode) console.log(tempType.innerText)
+              const container = (document.getElementById(objectId.slice(0, objectId.lastIndexOf('_'))) as HTMLSpanElement)
+              container.childNodes.forEach((child: any) => child.disabled = false)
+              tempType.disabled = true
+
             }
           }
         ]
@@ -60,9 +65,12 @@ export class SettingsComponent implements OnInit {
         settings: [
           {
             title: 'Mértékegység', type: SettingType.select, value: this.gs.metricType, options: Object.values(MetricType), function: (objectId: string) => {
-              const metric = (document.getElementById(objectId) as HTMLSelectElement).value.split(' ')[1]
-              this.gs.obd.useMetricSystem = (metric as MetricType) == MetricType.Metric
-              console.log(metric)
+              const metric = document.getElementById(objectId) as HTMLButtonElement
+              this.gs.obd.useMetricSystem = (metric.innerText as MetricType) == MetricType.Metric
+              if (this.gs.developerMode) console.log(metric.innerText)
+              const container = (document.getElementById(objectId.slice(0, objectId.lastIndexOf('_'))) as HTMLSpanElement)
+              container.childNodes.forEach((child: any) => child.disabled = false)
+              metric.disabled = true
             }
           }
         ]
@@ -74,32 +82,35 @@ export class SettingsComponent implements OnInit {
             title: 'Lejátszás indításkor', type: SettingType.check, value: this.gs.mp.playOnStartup, function: (objectId: string) => {
               const playOnStartup = (document.getElementById(objectId) as HTMLInputElement).checked
               this.gs.mp.playOnStartup = playOnStartup
-              console.log(playOnStartup)
+              if (this.gs.developerMode) console.log(playOnStartup)
             } },
           {
             title: 'Animációk', type: SettingType.check, value: this.gs.mp.animations, function: (objectId: string) => {
               const isAnimations = (document.getElementById(objectId) as HTMLInputElement).checked
               this.gs.mp.animations = isAnimations
-              console.log(isAnimations)
+              if (this.gs.developerMode) console.log(isAnimations)
             } },
           {
             title: 'Domináns szín', type: SettingType.colors, value: [this.gs.mp.colorSceme], function: (objectId: string) => {
               const color = (document.getElementById(objectId) as HTMLInputElement).value
               this.gs.mp.colorSceme = color
-              console.log(color)
+              if (this.gs.developerMode) console.log(color)
             }
           },
           {
             title: 'Wave színek', type: SettingType.colors, value: this.gs.mp.wave.colors, function: (objectId: string, index: string) => {
               const color = (document.getElementById(objectId) as HTMLInputElement).value
               this.gs.mp.wave.colors[parseInt(index)] = color
-              console.log(color)
+              if (this.gs.developerMode) console.log(color)
             } },
           {
             title: 'Wave typus', type: SettingType.select, value: this.gs.mp.wave.type, options: Object.values(WaveType), function: (objectId: string) => {
-              const waveType = (document.getElementById(objectId) as HTMLSelectElement).value.split(' ')[1]
-              this.gs.mp.wave.type = waveType as WaveType
-              console.log(waveType)
+              const waveType = document.getElementById(objectId) as HTMLButtonElement
+              this.gs.mp.wave.type = waveType.innerText as WaveType
+              if (this.gs.developerMode) console.log(waveType.innerText)
+              const container = (document.getElementById(objectId.slice(0, objectId.lastIndexOf('_'))) as HTMLSpanElement)
+              container.childNodes.forEach((child: any) => child.disabled = false)
+              waveType.disabled = true
             }
           }
         ]
@@ -111,7 +122,7 @@ export class SettingsComponent implements OnInit {
             title: 'Developer Mode', type: SettingType.check, value: this.gs.developerMode, function: (objectId: string) => {
               const isDeveloper = (document.getElementById(objectId) as HTMLInputElement).checked
               this.gs.developerMode = isDeveloper
-              console.log('DEVELOPER MODE:', isDeveloper)
+              if (this.gs.developerMode) console.log('DEVELOPER MODE:', isDeveloper)
             }
           }
         ]

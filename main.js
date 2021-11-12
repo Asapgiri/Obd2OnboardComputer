@@ -4,7 +4,7 @@ const { spawn } = require('child_process')
 // const electronReload = require('electron-reload')
 // electronReload(__dirname, {})
 
-let server_process, indexHtml = 'dist/OBD2OnboardComputer/browser/index.html'
+let server_process, indexHtml = 'dist/OBD2OnboardComputer/browser/index.html', reloadNumber = 1
 app.allowRendererProcessReuse = false
 
 function createWindow() {
@@ -32,7 +32,7 @@ function createWindow() {
     // Open the DevTools.
   mainWindow.webContents.openDevTools()
   mainWindow.webContents.on('did-fail-load', () => {
-    console.log('did-fail-load');
+    console.log('did-fail-load - ' + reloadNumber++);
     mainWindow.loadFile(indexHtml);
     // REDIRECT TO FIRST WEBPAGE AGAIN
   });

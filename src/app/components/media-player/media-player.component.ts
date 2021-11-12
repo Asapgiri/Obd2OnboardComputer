@@ -295,22 +295,24 @@ export class MediaPlayerComponent implements OnInit {
   }
 
   private initAnimationFactory(doSearch?: boolean) {
-    let offset: number
-    const container = document.getElementById('title-container')
-    const title = document.getElementById('music-title')
-    //console.log(container, title)
-    if (doSearch && container && title) offset = container.offsetWidth - title.offsetWidth 
-    else offset = (this.scrollTitleContainer.nativeElement as HTMLElement).offsetWidth - (this.scrollableMusicTitle.nativeElement as HTMLElement).offsetWidth
+    if (this.globalsService.globalSettings.mp.animations) {
+      let offset: number
+      const container = document.getElementById('title-container')
+      const title = document.getElementById('music-title')
+      //console.log(container, title)
+      if (doSearch && container && title) offset = container.offsetWidth - title.offsetWidth
+      else offset = (this.scrollTitleContainer.nativeElement as HTMLElement).offsetWidth - (this.scrollableMusicTitle.nativeElement as HTMLElement).offsetWidth
 
-    if (this.player) this.player.reset()
-    if (offset && offset < 0) {
-      //(this.scrollableMusicTitle.nativeElement as HTMLElement).style.marginLeft = `${offset}`
-      this.factory = this.builder.build([
-        style({ left: offset * 1.5 }),
-        animate(10000, style({}))
-      ]);
-      this.player = this.factory.create(this.scrollableMusicTitle.nativeElement, {});
-      this.animate();
+      if (this.player) this.player.reset()
+      if (offset && offset < 0) {
+        //(this.scrollableMusicTitle.nativeElement as HTMLElement).style.marginLeft = `${offset}`
+        this.factory = this.builder.build([
+          style({ left: offset * 1.5 }),
+          animate(10000, style({}))
+        ]);
+        this.player = this.factory.create(this.scrollableMusicTitle.nativeElement, {});
+        this.animate();
+      }
     }
   }
 

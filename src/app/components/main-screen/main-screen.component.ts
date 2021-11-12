@@ -15,7 +15,10 @@ export class MainScreenComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // this.obd2Service.initOBD2()
-    this.mapService.generateMap()
+    this.mapService.destroyMap()
+    setTimeout(() => {
+      this.mapService.generateMap(false)
+    }, 300)
   }
 
   ngOnDestroy(): void {
