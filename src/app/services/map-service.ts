@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as L from 'leaflet'
 import { GPSCollector } from "../shared/types/t-gps-collector";
-//import { MBTiles } from 'leaflet-tilelayer-mbtiles-ts';
 import { GlobalsService } from "./globals-service";
 
 // declare var L: any
@@ -18,8 +17,17 @@ export class MapService {
   private location: L.Marker<any>
   private geojsonLayer: L.GeoJSON<any>
   private canMove: boolean = true
+  private tiles
     
   constructor(private gs: GlobalsService) {
+    this.tiles = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    // this.tiles = L.tileLayer('../../../4uMaps/{z}/{x}/{y}.png', {
+      // attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+      maxZoom: this.gs.globalSettings.map.maxZoom,
+      minZoom: this.gs.globalSettings.map.minZoom,
+      id: (new Date()).getHours() < 20 && (new Date()).getHours() > 6 ? 'light-v10' : 'dark-v10',
+      accessToken: 'pk.eyJ1IjoiYXNhMjkiLCJhIjoiY2t1ZGl5a2w5MWF5czJubW83djFvZnkxbSJ9.WjYhlQPSdjbFKZRR92RS5Q'
+    })
     this.coordinates = this.gs.globalSettings.map.lastCoordinates
     this.getCoordinates()
   }
@@ -27,13 +35,7 @@ export class MapService {
   public generateMap(zoom = true) {
     this.map = L.map('map', { zoomControl: zoom }).setView(this.coordinates, this.gs.globalSettings.map.defaultZoom);
 
-    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-      // attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-      maxZoom: this.gs.globalSettings.map.maxZoom,
-      minZoom: this.gs.globalSettings.map.minZoom,
-      id: (new Date()).getHours() < 20 && (new Date()).getHours() > 6 ? 'light-v10' : 'dark-v10',
-      accessToken: 'pk.eyJ1IjoiYXNhMjkiLCJhIjoiY2t1ZGl5a2w5MWF5czJubW83djFvZnkxbSJ9.WjYhlQPSdjbFKZRR92RS5Q'
-    }).addTo(this.map);
+    this.tiles.addTo(this.map)
 
     this.location = L.marker(this.coordinates, {
       icon: L.icon({

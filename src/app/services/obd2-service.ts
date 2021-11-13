@@ -114,7 +114,7 @@ export class Obd2Service {
 
   private calculateGear(self: this): void {
     if (self.data.speed < 0) self.data.gear = -1
-    else if (self.data.speed == 0 || self.data.speed > 10 && self.data.rev < 1000) self.data.gear = 0
+    else if (self.data.speed == 0 || self.data.speed > 20 && self.data.rev < 1000) self.data.gear = 0
     else {
       const geerVal = self.data.rev / self.data.speed
       if (geerVal < 35) self.data.gear = 5
