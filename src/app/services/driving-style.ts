@@ -27,6 +27,7 @@ export class DrivingStyler implements IDrivingStyler {
     }
     this.actualDS.DS = this.actualDS.rpm / this.actualDS.vss * this.actualDS.fc
     if (this.actualDS.DS) this.postDS.push(this.actualDS)
+    else this.actualDS.DS = -1
     return this.drivingStyleSringify()
   }
 
