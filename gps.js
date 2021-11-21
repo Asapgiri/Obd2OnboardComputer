@@ -1,6 +1,6 @@
 const SerialPort = require('serialport');
 const Readline = SerialPort.parsers.Readline;
-const port = new SerialPort('/dev/serial0');
+const port = new SerialPort('/dev/ttyACM0');
 const parser = new Readline();
 port.pipe(parser);
 
@@ -14,4 +14,5 @@ gps.on('data', function(data) {
 
 port.on('data', function(data) {
   gps.updatePartial(data);
+  port.resume();
 });
