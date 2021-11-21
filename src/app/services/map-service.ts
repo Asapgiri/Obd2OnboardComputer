@@ -45,11 +45,11 @@ export class MapService {
     }).addTo(this.map)
     this.loadLocation()
 
-    setTimeout(() => {
+    /* setTimeout(() => {
       this.coordinates = { lat: 47.781594, lng: 18.883087 }
       this.loadLocation()
       console.log('location change to:', this.coordinates)
-    }, 10000)
+    }, 10000) */
 
     this.gs.getGpsOutput((data: string) => {
       data.split('\n').forEach(d => {
