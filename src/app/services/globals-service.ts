@@ -13,6 +13,8 @@ import { MediaPlayerService, Song } from "./media-player-service"
 import { strict } from "assert/strict"
 import { GPSCollector } from "../shared/types/t-gps-collector"
 import { MyGeoJSON } from "../shared/types/t-my-geo-json"
+import { Router } from "@angular/router"
+import { Initer } from "./repo/initer"
 
 
 @Injectable()
@@ -31,22 +33,26 @@ export class GlobalsService {
   private appPath: string
   private actualCoordinates: Coordinates
   private dataSaver: DataSaver
+  private shutdown: any
+  private initer: Initer
 
-
-  constructor(private electronService: ElectronService, private http: HttpClient) {
+  constructor(private electronService: ElectronService, private http: HttpClient, private router: Router) {
     this.appPath = this.electronService.remote.app.getAppPath()
-    console.log(this.appPath)
 
     this.fs = window.require('fs')
     this.path = window.require('path')
     this.globalSettings = this.loadSettings()
     this.spawn = window.require('child_process').spawn
+
+    this.initer = new Initer(this.spawn, this.path, this.appPath, this.globalSettings)
     this.initOBDReader()
     this.actualCoordinates = this.globalSettings.map.lastCoordinates
-    this.dataSaver = new DataSaver(this.fs, this.path, this.appPath)
+    this.dataSaver = new DataSaver(this.fs, this.path, this.appPath, this.globalSettings.developerMode)
     this.initGPS()
     this.initUSB()
+    this.initShutdown()
 
+    if (this.globalSettings.developerMode) console.log(this.appPath)
     this.time = new Date()
     setInterval(() => this.time = new Date(), this.globalSettings.time.refreshInterval)
 
@@ -73,7 +79,7 @@ export class GlobalsService {
   public getSongs(path?: string): Song[] {
     // const dirPath = this.path.join(this.appPath, this.globalSettings.mp.fileDir)
     const dirPath = this.globalSettings.mp.fileDir
-    console.log(dirPath)
+    if (this.globalSettings.developerMode) console.log(dirPath)
 
     const songPaths = this.findSongs(this.globalSettings.mp.fileDir)
     let songs: Song[] = []
@@ -83,7 +89,7 @@ export class GlobalsService {
         src: song
       })
     })
-    console.log('GS getSongs:', songs)
+    if (this.globalSettings.developerMode) console.log('GS getSongs:', songs)
 
     return songs
   }
@@ -108,7 +114,7 @@ export class GlobalsService {
       else {
         const fileTmb = file.split('.')
         const ext = fileTmb[fileTmb.length - 1]
-        if (ext == 'mp3') {
+        if (ext == 'mp3' || ext == 'wav' || ext == 'ogg' || ext == 'webm' || ext == 'mp4') {
           //console.log(file)
           songs.push(`${dirpath}/${file}`)
         }
@@ -186,58 +192,126 @@ export class GlobalsService {
   }
 
   private initOBDReader(): void {
-    this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
-    this.obd.stdout.setEncoding('utf8')
-    this.obd.stderr.setEncoding('utf8')
-    this.obd.stdout.on('data', (data: string) => {
-      console.log('Temp parser data')
-      data.split('\n').forEach(d => {
-        if (d) {
-          console.log(d)
-          try {
-            const parsedData = JSON.parse(d) as OBDCollector
-            if (parsedData.name == 'iat') this.temperature = this.setTemperature(parsedData.value as number)
-          }
-          catch (e) {
-            // TODO: ERROR MESSAGE TO WANNABE LOGGER SOMETIME
-          }
-        }
-      })
+    //this.obd = this.spawn('node', [this.path.join(this.appPath, 'obd.js')])
+    //this.obd.stdout.setEncoding('utf8')
+    //this.obd.stderr.setEncoding('utf8')
+    //this.obd.stdout.on('data', (data: string) => {
+    //  if (this.globalSettings.developerMode) console.log('Temp parser data')
+    //  data.split('\n').forEach(d => {
+    //    if (d) {
+    //      if (this.globalSettings.developerMode) console.log(d)
+    //      try {
+    //        const parsedData = JSON.parse(d) as OBDCollector
+    //        if (parsedData.name == 'iat') this.temperature = this.setTemperature(parsedData.value as number)
+    //      }
+    //      catch (e) {
+    //        // TODO: ERROR MESSAGE TO WANNABE LOGGER SOMETIME
+    //      }
+    //    }
+    //  })
 
-      if (this.globalSettings.developerMode) console.log(data)
-    })
-    this.obd.stderr.on('data', (data: string) => {
-      if (data.length < 1000) console.log(typeof data, data)
+    //  if (this.globalSettings.developerMode) console.log(data)
+    //})
+    //this.obd.stderr.on('data', (data: string) => {
+    //  if (data.length < 1000) console.log(typeof data, data)
+    //})
+
+    this.obd = this.initer.init({
+      service: 'obd.js',
+      stdout: (data: string) => {
+        if (this.globalSettings.developerMode) console.log('Temp parser data')
+        data.split('\n').forEach(d => {
+          if (d) {
+            if (this.globalSettings.developerMode) console.log(d)
+            try {
+              const parsedData = JSON.parse(d) as OBDCollector
+              if (parsedData.name == 'iat') this.temperature = this.setTemperature(parsedData.value as number)
+            }
+            catch (e) {
+              // TODO: ERROR MESSAGE TO WANNABE LOGGER SOMETIME
+            }
+          }
+        })
+
+        if (this.globalSettings.developerMode) console.log(data)
+      },
+      stderr: (err: string) => {
+        if (this.globalSettings.developerMode) console.log('OBD SERVICE ERROR:', err)
+      }
     })
   }
 
   private initGPS(): void {
-    this.gps = this.spawn('node', [this.path.join(this.appPath, 'gps.js')])
-    this.gps.stdout.setEncoding('utf8')
-    this.gps.stderr.setEncoding('utf8')
-    this.gps.stdout.on('data', (data: string) => {
-      data.split('\n').forEach(d => {
-        if (d) {
-          const parsedData = JSON.parse(d) as GPSCollector
-          if (parsedData.lat) this.actualCoordinates = {
-            lat: parsedData.lat,
-            lng: parsedData.lon
+    //this.gps = this.spawn('node', [this.path.join(this.appPath, 'gps.js')])
+    //this.gps.stdout.setEncoding('utf8')
+    //this.gps.stderr.setEncoding('utf8')
+    //this.gps.stdout.on('data', (data: string) => {
+    //  data.split('\n').forEach(d => {
+    //    if (d) {
+    //      const parsedData = JSON.parse(d) as GPSCollector
+    //      if (parsedData.lat) this.actualCoordinates = {
+    //        lat: parsedData.lat,
+    //        lng: parsedData.lon
+    //      }
+    //    }
+    //  })
+    //})
+    //this.gps.stderr.on('data', (data: string) => {
+    //  if (data.length < 1000) console.log(data)
+    //})
+
+    this.gps = this.initer.init({
+      service: 'gps.js',
+      stdout: (data: string) => {
+        data.split('\n').forEach(d => {
+          if (d) {
+            const parsedData = JSON.parse(d) as GPSCollector
+            if (parsedData.lat) this.actualCoordinates = {
+              lat: parsedData.lat,
+              lng: parsedData.lon
+            }
           }
-        }
-      })
+        })
+      },
+      stderr: (err: string) => {
+        if (this.globalSettings.developerMode) console.log('GPS SERVICE ERROR:', err)
+      }
     })
-    this.gps.stderr.on('data', (data: string) => {
-      if (data.length < 1000) console.log(data)
-    })
+
     this.dataSaver.init(this.gps, this.obd)
   }
 
   private initUSB(): void {
-    this.usb = this.spawn('node', [this.path.join(this.appPath, 'usb.js')])
-    this.usb.stdout.setEncoding('utf8')
-    this.usb.stderr.setEncoding('utf8')
-    this.usb.stderr.on('data', (data: string) => {
-      console.log('USB SERVICE ERROR:', data)
+    //this.usb = this.spawn('node', [this.path.join(this.appPath, 'usb.js')])
+    //this.usb.stdout.setEncoding('utf8')
+    //this.usb.stderr.setEncoding('utf8')
+    //this.usb.stderr.on('data', (data: string) => {
+    //  if (this.globalSettings.developerMode) console.log('USB SERVICE ERROR:', data)
+    //})
+
+    this.usb = this.initer.init({
+      service: 'usb.js',
+      stderr: (err: string) => {
+        if (this.globalSettings.developerMode) console.log('USB SERVICE ERROR:', err)
+      }
+    })
+  }
+
+  private initShutdown(): void {
+    this.shutdown = this.initer.init({
+      service: 'shutdown.js',
+      stdout: (data: string) => {
+        console.log(data)
+        this.obd.kill()
+        this.gps.kill()
+        this.usb.kill()
+        this.dataSaver.saveData()
+        this.dataSaver.kill()
+        this.router.navigate(['/overwiev'])
+      },
+      stderr: (err: string) => {
+        if (this.globalSettings.developerMode) console.log('SHUTDOWN SERVICE ERROR:', err)
+      }
     })
   }
 }

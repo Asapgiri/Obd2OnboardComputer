@@ -8,7 +8,7 @@ import { WaveType } from '../../shared/enums/e-wave-type';
 import { GlobalSettings } from '../../shared/global-settings';
 import { Setting } from '../../shared/types/t-setting';
 import { SettingsGroup } from '../../shared/types/t-settings-group';
-
+import { TIME_ZONES } from './timezones.constant';
 
 @Component({
   selector: 'app-settings',
@@ -19,6 +19,19 @@ export class SettingsComponent implements OnInit {
   settings: SettingsGroup[] = []
   SettingType = SettingType
   ret: string = ''
+  execSync = window.require("child_process").execSync;
+  
+  timezone: string = ''
+  newTimezone: string = ''
+  timezones: string[] = []
+
+  public colors: string[] = [
+    "#ffe252",
+    "#ac00e6",
+    "#4287f5",
+    "#4913c9",
+    "#ff4d4d"
+  ]
 
   private gs: GlobalSettings
 
@@ -26,25 +39,54 @@ export class SettingsComponent implements OnInit {
     this.gs = JSON.parse(JSON.stringify(this.globals.globalSettings))
     this.initSettings() 
     if (this.gs.developerMode) console.log(this.gs)
+    this.colors = this.gs.mp.pickableColors
   }
 
   public saveSettings() {
     this.globals.globalSettings = JSON.parse(JSON.stringify(this.gs))
     this.globals.saveSettings()
 
+    if (this.newTimezone != '' && this.newTimezone != this.timezone) {
+      this.execSync(`sudo timedatectl set-timezone ${this.newTimezone}`)
+      if (this.gs.developerMode) console.log('New timezonet set: ', this.newTimezone, ', new time: ', new Date())
+    }
+
     if (this.gs.developerMode) console.log(this.gs)
   }
 
   private initSettings() {
+    try {
+      this.timezone = this.execSync('timedatectl | grep zone | cut -d" " -f 19', { shell: '/bin/sh' }).toString()
+      this.timezones = this.execSync('timedatectl list-timezones', { shell: '/bin/bash' }).toString().split('\n')
+    }
+    catch (err) {
+      if (this.globals.globalSettings.developerMode) console.log(err)
+      this.timezone = 'Europe/Budapest'
+      this.timezones = TIME_ZONES
+    }
+    if (this.gs.developerMode) console.log('Timezones', this.timezone, this.timezones)
+    const continents: any = {}
+    this.timezones.forEach(country => {
+      const [cont, ctry] = country.split('/')
+      if (continents[cont]) continents[cont].push(ctry)
+      else continents[cont] = [ctry]
+    })
+    if (this.gs.developerMode) console.log(continents)
     this.settings = [
       {
-        title: 'General',
+        title: 'Idő és Hőmérséklet',
         settings: [
           {
-            title: 'Idő / Dátum', type: SettingType.date, value: new Date(), function: (dateId: string, timeId: string) => {
-              const date = (document.getElementById(dateId) as HTMLInputElement).value
-              const time = (document.getElementById(timeId) as HTMLInputElement).value
-              if (this.gs.developerMode) console.log(date, time)
+            title: 'Időzóna',
+            type: SettingType.date,
+            value: { continent: this.timezone.split('/')[0], zone: this.timezone },
+            options: continents,
+            function: (objectId: string) => {
+              setTimeout(() => {
+                const timezone = (document.getElementById(objectId) as HTMLSelectElement).value
+                if (this.gs.developerMode) console.log(timezone)
+                this.newTimezone = timezone.split(' ')[1]
+              }, 100)
             }
           },
           {
@@ -104,7 +146,7 @@ export class SettingsComponent implements OnInit {
               if (this.gs.developerMode) console.log(color)
             } },
           {
-            title: 'Wave typus', type: SettingType.select, value: this.gs.mp.wave.type, options: Object.values(WaveType), function: (objectId: string) => {
+            title: 'Wave típus', type: SettingType.select, value: this.gs.mp.wave.type, options: Object.values(WaveType), function: (objectId: string) => {
               const waveType = document.getElementById(objectId) as HTMLButtonElement
               this.gs.mp.wave.type = waveType.innerText as WaveType
               if (this.gs.developerMode) console.log(waveType.innerText)
@@ -116,10 +158,10 @@ export class SettingsComponent implements OnInit {
         ]
       },
       {
-        title: 'Untitled',
+        title: 'Rendszer',
         settings: [
           {
-            title: 'Developer Mode', type: SettingType.check, value: this.gs.developerMode, function: (objectId: string) => {
+            title: 'Fejlesztő mód', type: SettingType.check, value: this.gs.developerMode, function: (objectId: string) => {
               const isDeveloper = (document.getElementById(objectId) as HTMLInputElement).checked
               this.gs.developerMode = isDeveloper
               if (this.gs.developerMode) console.log('DEVELOPER MODE:', isDeveloper)
@@ -134,5 +176,4 @@ export class SettingsComponent implements OnInit {
     const ret = this.route.snapshot.paramMap.get('ret')
     this.ret = ret ? '/' + ret : ''
   }
-
 }

@@ -4,11 +4,11 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\components",
-    "\\src\\app\\components\\header",
-    "\\src\\app\\components\\main-frame",
     "\\src\\app\\components\\map",
     "\\src\\app\\components\\media-player",
     "\\src\\app\\components\\settings",
+    "\\src\\app\\services",
+    "\\src\\app\\services\\repo",
     "\\src\\assets"
   ],
   "PreviewInSolutionExplorer": false

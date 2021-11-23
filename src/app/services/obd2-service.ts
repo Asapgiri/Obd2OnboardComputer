@@ -52,11 +52,11 @@ export class Obd2Service {
     const self = this
     setTimeout(() => {
       if (this.globalsService.obd) this.globalsService.obd.stdout.on('data', (data: string) => {
-        console.log('OBD2 SERVICE:', data);
+        if (self.globalsService.globalSettings.developerMode) console.log('OBD2 SERVICE:', data);
 
         data.split('\n').forEach(d => {
           if (d) {
-            console.log(d)
+            if (self.globalsService.globalSettings.developerMode) console.log(d)
             const parsedData = JSON.parse(d) as OBDCollector
             if (parsedData.name) {
               switch (parsedData.name) {
@@ -99,11 +99,19 @@ export class Obd2Service {
       self.pastFuelDataBuffer.push(parseFloat(self.data.fuelCons.short))
       self.addedFuelBeforeCalculated++
 
-      if (self.addedFuelBeforeCalculated > self.calculateValueIndex || (self.isJustSturted && self.addedFuelBeforeCalculated > 25)) {
+      if (self.isJustSturted) {
+        const fuelcon = self.globalsService.globalSettings.averageFuelCon
+        self.data.fuelCons.long = fuelcon ?? '-'
+        self.isJustSturted = false
+      }
+
+      if (self.addedFuelBeforeCalculated > self.calculateValueIndex) {
         let sum = 0
         self.pastFuelDataBuffer.forEach(data => sum += data)
         self.data.fuelCons.long = parseFloat((sum / this.pastFuelDataBuffer.length).toPrecision(self.globalsService.globalSettings.obd.precision)).toString()
-        
+        self.globalsService.globalSettings.averageFuelCon = self.data.fuelCons.long
+        self.globalsService.saveSettings()
+
         self.addedFuelBeforeCalculated = 0
         self.isJustSturted = false
       }

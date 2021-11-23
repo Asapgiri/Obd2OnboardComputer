@@ -6,8 +6,17 @@
     <div class="setting" *ngFor="let setting of group.settings; let j = index">
       <span>{{ setting.title }}:</span>
       <span *ngIf="setting.type == SettingType.date">
-        <input id="date_{{ i+'_'+j }}" type="date" name="date" value="{{ setting.value | date: 'yyyy-dd-mm' }}" (change)="setting.function('date_'+i+'_'+j, 'time_'+i+'_'+j)" />
-        <input id="time_{{ i+'_'+j }}" type="time" name="time" value="{{ setting.value | date: 'HH:mm' }}" (change)="setting.function('date_'+i+'_'+j, 'time_'+i+'_'+j)" />
+        <select #datezone [(ngModel)]="setting.value.continent" (change)="setting.function('select_'+i+'_'+j)">
+          <option *ngFor="let opt of setting.options | keyvalue" [ngValue]="opt.key">
+            {{ opt.key }}
+          </option>
+        </select>
+        /
+        <select id="select_{{ i+'_'+j }}" [(ngModel)]="setting.value.zone" (change)="setting.function('select_'+i+'_'+j)">
+          <option *ngFor="let opt of setting.options[datezone.value.split(' ')[1]]" [ngValue]="datezone.value.split(' ')[1]+'/'+opt">
+            {{ opt }}
+          </option>
+        </select>
       </span>
       <span id="select_{{ i+'_'+j }}" *ngIf="setting.type == SettingType.select" class="btn-group btn-group-sm" role="group">
         <button *ngFor="let opt of setting.options; let k = index"
@@ -15,22 +24,27 @@
                 type="button"
                 class="btn btn-secondary"
                 [disabled]="setting.value == opt"
-                (click)="setting.function('select_'+i+'_'+j+'_'+k)">{{ opt }}</button>
+                (click)="setting.function('select_'+i+'_'+j+'_'+k)">
+          {{ opt }}
+        </button>
 
         <!-- <select id="select_{{ i+'_'+j }}" *ngIf="setting.options" [(ngModel)]="setting.value" (change)="setting.function('select_'+i+'_'+j)">
-    <option *ngFor="let opt of setting.options" [ngValue]="opt">
-      {{ opt }}
-    </option>
-  </select> -->
+          <option *ngFor="let opt of setting.options" [ngValue]="opt">
+            {{ opt }}
+          </option>
+        </select> -->
       </span>
       <span *ngIf="setting.type == SettingType.check" class="form-check form-switch">
         <input id="check_{{ i+'_'+j }}" class="form-check-input" type="checkbox" [checked]="setting.value" (change)="setting.function('check_'+i+'_'+j)" />
       </span>
       <span *ngIf="setting.type == SettingType.colors">
-        <input id="color_{{ i+'_'+j+'_'+k }}" *ngFor="let val of setting.value; let k = index" type="color" value="{{ val }}" (change)="setting.function('color_'+i+'_'+j+'_'+k, k.toString())" />
+        <input id="color_{{ i+'_'+j+'_'+k }}" list="choosable-colors" *ngFor="let val of setting.value; let k = index" type="color" value="{{ val }}" (change)="setting.function('color_'+i+'_'+j+'_'+k, k.toString())" />
       </span>
     </div>
   </div>
+  <datalist id="choosable-colors">
+    <option *ngFor="let color of colors">{{ color }}</option>
+  </datalist>
   <button id="save-button" (click)="saveSettings()">Save</button>
 </div>
 

@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  @Input() public buttonText: string = 'Back'
+  @Input() public buttonText: string = 'Visza'
   @Input() public clickEvent: string = 'notDefinedClickEvent'
   @Input() public parent: any = this
   @Input() public buttonRoute: string[] | null = null

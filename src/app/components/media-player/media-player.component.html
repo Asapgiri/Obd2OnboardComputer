@@ -1,8 +1,8 @@
 <nav class="navbar navbar-dark pt-1 pb-1">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#" [routerLink]="['']">Back</a>
-    <button class="navbar-brand clickable" *ngIf="!isBluetoothPlaying" [style]="{'background': isSelectMusic ? '#aa4500' : ''}" (click)="selectMusic()">Számválasztó</button>
-    <button class="navbar-brand clickable" *ngIf="!isBluetoothPlaying" [style]="{'background': isSelectMusicFromPlaylist ? '#aa4500' : ''}" (click)="showPlaylist()">Playlist</button>
+    <a class="navbar-brand" href="#" [routerLink]="['']">Vissza</a>
+    <button class="navbar-brand clickable" *ngIf="!isBluetoothPlaying" [style]="{'background': isSelectMusic ? colorScheme : ''}" (click)="selectMusic()">Számválasztó</button>
+    <button class="navbar-brand clickable" *ngIf="!isBluetoothPlaying" [style]="{'background': isSelectMusicFromPlaylist ? colorScheme : ''}" (click)="showPlaylist()">Lejátszási lista</button>
     <button class="navbar-brand clickable" *ngIf="isBluetoothPlaying" (click)="bluetoothSettings()">Bluetooth Beállítások</button>
 
     <div class="btn-group">
@@ -26,12 +26,13 @@
 
 <div id="volume-bar" #volumebar></div>
 
+<canvas id="visualizer" width="800" height="460"></canvas>
 <div class="screen-container">
-  <canvas id="visualizer" width="800" height="460"></canvas>
   <div id="volumeControls" class="container-inner">
-    <button class="controls clickable" (click)="increaseVolume(); openVolume()">Volume +</button>
-    <button class="controls clickable">-</button>
-    <button class="controls clickable" (click)="decreaseVolume(); openVolume()">Volume -</button>
+    <button class="controls clickable" (click)="increaseVolume(); openVolume()">Hang +</button>
+    <button class="controls clickable" (click)="decreaseVolume(); openVolume()">Hang -</button>
+    <button class="controls control clickable" (click)="shuffleToggle()" [style]="{'background': mediaService.isUnorderedPlaylist() ? colorScheme : ''}"><img *ngIf="mediaService.isUnorderedPlaylist()" src="assets/shuffle.png" /><img *ngIf="!mediaService.isUnorderedPlaylist()" src="assets/shuffleWhite.png" /></button>
+    <button class="controls control clickable" (click)="repeateToggle()" [style]="{'background': mediaService.isRepeatePlaylist() ? colorScheme : ''}"><img *ngIf="mediaService.isRepeatePlaylist()" src="assets/repeat.png" /><img *ngIf="!mediaService.isRepeatePlaylist()" src="assets/repeatWhite.png" /></button>
   </div>
   <div *ngIf="!isSelectMusic && !isSelectMusicFromPlaylist" id="mediaPlayer" class="container-inner">
     <div id="title-container" (mouseover)="player ? player.pause() : ''" (mouseout)="player ? player.play() : ''" #scrollTitleContainer>
@@ -46,29 +47,28 @@
         </tr>
       </table>
       <div class="">
-        <button class="control-button" (click)="shuffleToggle()" [style]="{'background': mediaService.isUnorderedPlaylist() ? 'green' : ''}"><img src="assets/shuffle.png" /></button>
-        <button class="control-button" (click)="seekPreviousSong()"><<</button>
-        <button class="control-button" (click)="seekAudioBackward()" (mousedown)="seekTillMouseUp('back')" (mouseup)="clearSeekTillIntervals()"><</button>
-        <button class="control-button" (click)="toggleAudio()">{{music ? music.toggleButton : 'Play'}}</button>
-        <button class="control-button" (click)="seekAudioForward()" (mousedown)="seekTillMouseUp('forward')" (mouseup)="clearSeekTillIntervals()">></button>
-        <button class="control-button" (click)="seekNextSong()">>></button>
-        <button class="control-button" (click)="repeateToggle()" [style]="{'background': mediaService.isRepeatePlaylist() ? 'green' : ''}">repeate</button>
+        <button class="control-button clickable" (click)="seekPreviousSong()"><img src="assets/previous.png" /></button>
+        <button class="control-button clickable" (click)="seekAudioBackward()" (mousedown)="seekTillMouseUp('back')" (mouseup)="clearSeekTillIntervals()"><img src="assets/seekPrevious.png" /></button>
+        <button *ngIf="!audioService.isPlaying()" class="control-button clickable" (click)="toggleAudio()"><img src="assets/play.png" /></button>
+        <button *ngIf="audioService.isPlaying()" class="control-button clickable" (click)="toggleAudio()"><img src="assets/pause.png" /></button>
+        <button class="control-button clickable" (click)="seekAudioForward()" (mousedown)="seekTillMouseUp('forward')" (mouseup)="clearSeekTillIntervals()"><img src="assets/seekNext.png" /></button>
+        <button class="control-button clickable" (click)="seekNextSong()"><img src="assets/next.png" /></button>
       </div>
     </div>
   </div>
   <div *ngIf="isSelectMusic" id="musicList" class="container-inner">
     <div id="musicListButtons">
-      <button class="musicPlay left-button" (click)="playAllSongs()">Play All</button>
-      <button class="musicPlay right-button" (click)="playAllSongs(true)">Shuffle All</button>
+      <button class="musicPlay left-button" (click)="playAllSongs()">Lejátszás</button>
+      <button class="musicPlay right-button" (click)="playAllSongs(true)">Keverés</button>
     </div>
     <div *ngFor="let item of mediaService.getSongs(); index as i">
-      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i)"><span>{{i+1}}.</span> {{item.pretty}} {{music.Name == item.pretty ? ' | now playing...' : ''}}</button>
+      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i)">{{item.pretty}} {{music.Name == item.pretty ? ' | now playing...' : ''}}</button>
       <button class="musicInteract" *ngIf="music.Name != item.pretty" (click)="mediaService.addToPlaylist(i)">Add</button>
     </div>
   </div>
   <div *ngIf="isSelectMusicFromPlaylist" id="musicList" class="container-inner">
     <div *ngFor="let item of mediaService.getPlaylist(); index as i">
-      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i, true)"><span>{{i+1}}.</span> {{item ? item.pretty : '---'}} {{music.id == i ? ' | now playing...' : ''}}</button>
+      <button class="{{ music.Name == item.pretty ? 'selectedMusic' : 'musicName' }}" (click)="setSong(item, i, true)">{{item ? item.pretty : '---'}} {{music.id == i ? ' | now playing...' : ''}}</button>
       <button class="musicInteract" *ngIf="music.Name != item.pretty" (click)="mediaService.removeFromPlaylist(i)">X</button>
     </div>
   </div>

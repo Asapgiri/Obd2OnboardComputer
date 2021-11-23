@@ -28,10 +28,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .container-inner {
-    height: 100%;
-    float: left;
-    margin: 0px;
-    padding: 2% 3%;
+  height: 100%;
+  float: left;
+  margin: 0px;
+  padding: 1%;
 }
 
 .huge-link {

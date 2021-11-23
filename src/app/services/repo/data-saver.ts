@@ -17,7 +17,7 @@ export class DataSaver {
   private filenameGJSON: string = new Date().toISOString().replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, '-') + '.geo.json'
   private filenameOBD: string = new Date().toISOString().replace(/[ &\/\\#,+()$~%.'":*?<>{}]/g, '-') + '.obd.json'
 
-  constructor(_fs: typeof fs, _path: typeof path, private appPath: string) {
+  constructor(_fs: typeof fs, _path: typeof path, private appPath: string, private devmode: boolean = false) {
     this.fs = _fs
     this.path = _path
   }
@@ -28,7 +28,7 @@ export class DataSaver {
     this.gps.stdout.on('data', (data: string) => {
       data.split('\n').forEach(d => {
         if (d) {
-          console.log('DATA SAVER GPS:', d)
+          if (this.devmode) console.log('DATA SAVER GPS:', d)
           const parsedData = JSON.parse(d) as GPSCollector
           if (parsedData.lon) this.collectedGPSData.coordinates.push([parsedData.lon, parsedData.lat])
         }
@@ -37,7 +37,7 @@ export class DataSaver {
     this.obd.stdout.on('data', (data: string) => {
       data.split('\n').forEach(d => {
         if (d) {
-          console.log('DATA SAVER OBD:', d)
+          if (this.devmode) console.log('DATA SAVER OBD:', d)
           const parsedData = JSON.parse(d) as OBDCollector
           parsedData.time = new Date().toISOString()
           this.collectedOBDData.push(parsedData)
@@ -48,8 +48,12 @@ export class DataSaver {
     this.intervalId = setInterval(() => this.saveData(this), 30000)
   }
 
+  public kill(): void {
+    clearInterval(this.intervalId)
+  }
+
   public getGPSData(): MyGeoJSON {
-    console.log(this.collectedGPSData)
+    if (this.devmode) console.log(this.collectedGPSData)
     return this.collectedGPSData.coordinates.length > 0 ? this.collectedGPSData :
       {
         type: 'LineString',

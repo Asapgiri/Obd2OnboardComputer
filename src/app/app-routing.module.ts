@@ -19,11 +19,11 @@ const routes: Routes = [
 
 function getRoutes(): Routes {
   let routesTemp: Routes = routes
-  const loader = new AppsLoader()
-  const loadedRoutes = loader.getComponents()
-  loadedRoutes.forEach(route => routesTemp.push(route))
+  // const loader = new AppsLoader()
+  // const loadedRoutes = loader.getComponents()
+  // loadedRoutes.forEach(route => routesTemp.push(route))
 
-  console.log(routesTemp)
+  //console.log(routesTemp)
   return routesTemp;
 };
 

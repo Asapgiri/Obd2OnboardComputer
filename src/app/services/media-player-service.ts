@@ -13,6 +13,7 @@ export class MediaPlayerService implements IMediaPlayerService {
   private current: Current = {
     song: {src:'', pretty:''}, id: 0 }
   //private cf: any
+  private self = this
 
   constructor(private globalsService: GlobalsService) { //, callback?: any) {
     this.init()
@@ -24,11 +25,11 @@ export class MediaPlayerService implements IMediaPlayerService {
 
     const self = this
     this.globalsService.usb.stdout.on('data', function (device: any) {
-      console.log('change', device);
+      if (self.globalsService.globalSettings.developerMode) console.log('change', device);
       setTimeout(() => {
         self.initSongs()
-        console.log(self.songs)
-      }, 5000)
+        if (self.globalsService.globalSettings.developerMode) console.log(self.songs)
+      }, 3000)
     });
   }
 
@@ -121,8 +122,11 @@ export class MediaPlayerService implements IMediaPlayerService {
 
   public resetPlaylist(index?: number): void {
     this.playlist.isShuffled = false
+    if (this.globalsService.globalSettings.developerMode) console.log('Current song: ', this.current)
     this.playlist.reset()
-    if (index) {
+    if (this.globalsService.globalSettings.developerMode) console.log('Current song: ', this.current)
+    if (this.globalsService.globalSettings.developerMode) console.log('Index value:', index)
+    if (typeof index !== 'undefined') {
       this.playlist.add(this.songs[index])
       this.current = { song: this.playlist.getSong(0), id: 0 }
     }
@@ -130,6 +134,8 @@ export class MediaPlayerService implements IMediaPlayerService {
       song: {src: '', pretty: ''},
       id: 0
     }
+
+    if (this.globalsService.globalSettings.developerMode) console.log('Current song: ', this.current)
 
     this.save()
   }
@@ -191,6 +197,8 @@ export class MediaPlayerService implements IMediaPlayerService {
     this.playlist.set(canBePlaylist)
     this.playlist.isRepeate = savedPlayer.isRepeate
     this.playlist.isShuffled = savedPlayer.isShuffle
+
+    if (this.globalsService.globalSettings.developerMode) console.log('Loaded songs: ', this.songs)
 
     if (!this.current.song) this.current.song = { src: '', pretty: '' }
   }

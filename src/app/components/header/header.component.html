@@ -3,9 +3,9 @@
     <a *ngIf="!buttonRoute" class="navbar-brand" href="#" (click)="buttonClick()" #globalButton>{{ buttonText }}</a>
     <a *ngIf="buttonRoute" class="navbar-brand" href="#" [routerLink]="buttonRoute" #globalButton>{{ buttonText }}</a>
     <!-- <a class="navbar-brand" href="#" *ngIf="!appsScreen" (click)="changeScreen()">Apps</a>
-  <a class="navbar-brand" href="#" *ngIf="appsScreen" (click)="changeScreen()">Back</a> -->
+  <a class="navbar-brand" href="#" *ngIf="appsScreen" (click)="changeScreen()">Visza</a> -->
 
-    <canvas *ngIf="audioService.isPlaying()" id="visualizer" width="600" height="50"></canvas>
+    <a *ngIf="audioService.isPlaying()" href="#" [routerLink]="['/mp']"><canvas id="visualizer" width="600" height="50"></canvas></a>
 
     <div class="btn-group">
       <button class="navbar-toggler" type="button" (click)="open(optionDropdown)">
@@ -19,7 +19,7 @@
           <a class="huge-link text-muted" href="#" [routerLink]="['/settings', router.url]" (click)="modal.close('Settings click')">Beállítások</a>
         </div>
         <div class="modal-footer p-0">
-          <a class="huge-link" href="#" (click)="modal.close('Back click')">Back</a>
+          <a class="huge-link" href="#" (click)="modal.close('Back click')">Visza</a>
         </div>
       </ng-template>
     </div>

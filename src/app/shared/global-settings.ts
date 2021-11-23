@@ -3,6 +3,28 @@ import { MetricType } from "./enums/e-metryc-types";
 import { TempType } from "./enums/e-temps";
 import { WaveType } from "./enums/e-wave-type";
 
+export type MpSettings = {
+  fileDir: string
+  wave: {
+    type: WaveType
+    stroke: number,
+    colors: string[]
+  },
+  deviceId: string,
+  player: {
+    lastPlayed: Current,
+    lastPlaylist: Song[],
+    isRepeate: boolean,
+    isShuffle: boolean,
+    isPlaying: boolean,
+    volume: number
+  },
+  playOnStartup: boolean,
+  animations: boolean,
+  colorSceme: string,
+  pickableColors: string[]
+}
+
 export type GlobalSettings = {
   assetDir: string,
   map: {
@@ -22,25 +44,7 @@ export type GlobalSettings = {
   time: {
     refreshInterval: number
   },
-  mp: {
-    fileDir: string
-    wave: {
-      type: WaveType
-      stroke: number,
-      colors: string[]
-    },
-    deviceId: string,
-    player: {
-      lastPlayed: Current,
-      lastPlaylist: Song[],
-      isRepeate: boolean,
-      isShuffle: boolean,
-      volume: number
-    },
-    playOnStartup: boolean,
-    animations: boolean,
-    colorSceme: string
-  },
+  mp: MpSettings,
   api: {
     url: string,
     mp: string,
@@ -60,5 +64,6 @@ export type GlobalSettings = {
     }
   },
   developerMode: boolean,
-  metricType: MetricType
+  metricType: MetricType,
+  averageFuelCon: string
 }

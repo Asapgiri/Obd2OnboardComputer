@@ -4,6 +4,6 @@ export type Setting = {
   title: string,
   type: SettingType,
   value: any,
-  options?: string[],
+  options?: any,
   function: (objectId: string, param2?: string) => void
 }

@@ -73,7 +73,7 @@ export class MapService {
 
   public loadTravelledRoad(): void {
     const route = this.gs.getGpsRoute()
-    console.log(route)
+    if (this.gs.globalSettings.developerMode) console.log(route)
     this.geojsonLayer = L.geoJSON(route, {
       style: {
         color: this.gs.globalSettings.mp.colorSceme,
